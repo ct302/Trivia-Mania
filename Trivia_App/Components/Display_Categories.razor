@@ -1,0 +1,303 @@
+﻿@inject Services.CategoryService categoryService
+@inject Services.DifficultyService difficultySService
+@inject Services.GameLengthService gameLengthService
+@inject Services.DisplayAnswerService displayAnswerService
+@inject Services.ScoringService scoringService
+@inject HttpClient client
+@inject NavigationManager navManager
+@using Services;
+@using System.Timers;
+@using System.Net.Http.Json;
+@using Data;
+@using System.Net;
+
+
+
+<h4 id="categoryContainer" style="color: white" class="text-center">Please choose a Category</h4>
+
+@*Categories*@
+
+<div class="container" id="categoryContainer">
+
+
+    @if (categoryService.categories.Trivia_categories == null)
+    {
+
+    }
+    else
+    {
+
+
+        @*<select @bind="categoryService.chosenCategory" @onclick="@categoryService.GetChosenCategorie">
+            @foreach (var item in categoryService.categories.Trivia_categories)
+            {
+
+
+
+                <option>@item.Name</option>
+
+            }
+        </select>*@
+        <p style="display:inline">Chosen Categoy @(categoryService.chosenCategory)</p>
+        <button class="btn-lg" @onclick="HandleFullApi">Start Game</button>
+    }
+
+
+</div>
+
+
+
+@*Displaying Questions and Answers*@
+<div>
+    @if (categoryService.myTrivia.Results == null)
+    {
+
+    }
+    else
+    {
+
+        navManager.NavigateTo("displayquestions");
+
+
+     
+
+    }
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*CSS STYLES*@
+<style>
+
+
+    #hideQuestionDisplay {
+        animation: @(categoryService.wasGameStarted == true ? " rotate-scale-down-ver" : "");
+        display: @(categoryService.wasGameStarted == true ? "" : "none");
+    }
+
+    #categoryContainer {
+        animation: @(categoryService.wasGameStarted == true ? "rotate-out-2-cw" : "") 2s ease-in-out forwards;
+
+    }
+
+    #questionText {
+        color: white;
+        font-family: Consolas;
+        font-size: 2em;
+        pointer-events: none;
+        position: relative;
+    }
+
+    #CorrectanswerText {
+        animation: focus-in-expand-fwd 0.5s ease-in-out forwards;
+        transition: all 0.5s ease-in-out;
+        animation: @(displayAnswerService.wasAnswerClicked == true ? "tracking-out-expand-fwd-top" : "") 1.5s ease-in-out forwards;
+        position: relative;
+
+
+    }
+        #CorrectanswerText:hover {
+            color: black;
+            transition: all 0.5s ease-in-out;
+            opacity: 1;
+        }
+
+
+
+
+    .allAnswers{
+
+    }
+</style>
+
+
+@*CODE*@
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        await categoryService.HandleCategoryApi();
+        categoryService.MapChosenCategory();
+
+    }
+
+
+    Dictionary<string, Dictionary<string, string[]>> myDict = new Dictionary<string, Dictionary<string, string[]>>();
+
+    Dictionary<string, string[]> answerDict = new Dictionary<string, string[]>();
+
+    List<string> rightAndWrongAnswers = new List<string>();
+
+  
+
+
+
+
+
+
+
+
+   
+
+
+
+
+
+    Trivia myTriviaResult = new Trivia();
+
+    Random myRandom = new Random();
+
+
+    public async Task HandleFullApi()
+    {
+
+        categoryService.wasGameStarted = true;
+        categoryService.myTrivia = await client.GetFromJsonAsync<Trivia>($"https://opentdb.com/api.php?amount={gameLengthService.chosenGameLength}&category={categoryService.chosenCategoryNumber}&difficulty={difficultySService.GetFinalDifficultySelection()}&type=multiple");
+        myTriviaResult = categoryService.myTrivia;
+
+    }
+
+
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

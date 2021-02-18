@@ -1,0 +1,387 @@
+﻿@inject Services.CategoryService categoryService
+@inject Services.DifficultyService difficultySService
+@inject Services.GameLengthService gameLengthService
+@inject Services.DisplayAnswerService displayAnswerService
+@inject Services.ScoringService scoringService
+@inject HttpClient client
+@inject NavigationManager navManager
+@using Services;
+@using System.Timers;
+@using System.Net.Http.Json;
+@using Data;
+@using System.Net;
+
+
+
+<h4 id="categoryContainer" style=" position: relative; bottom: 100px; color: white; background-color:black; font-family: Algerian; font-size: 3em;" class="text-center border-bottom">Categories</h4>
+
+@*Categories*@
+
+<section class="py-5" style="position:relative;  bottom: 100px;">
+    <div class="container" style="overflow:hidden">
+        <div class="row text-center">
+
+
+            @if (categoryService.categories.Trivia_categories == null)
+            {
+
+            }
+            else
+            {
+
+
+                @foreach (var item in categoryService.categories.Trivia_categories)
+                {
+
+                    <div id="topicDiv" class="col-md-6 my-auto p-2 p-md-5 neons @(topicDivHovered == true ? "flip-scale-up-hor" : "") " style="border: 2px solid white;" @onclick="@( () => GetChosenCategorie($"{item.Name}"))">
+                        <h2 class="mb-4" id="topicText" style="text-wrap:none; white-space: nowrap;">@item.Name.Replace($"Entertainment:", "")</h2>
+
+                    </div>
+
+
+
+                }
+            }
+
+        </div>
+    </div>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*CSS STYLES*@
+<style>
+
+    .flip-scale-up-hor {
+        -webkit-animation: flip-scale-up-hor 0.5s linear both;
+        animation: flip-scale-up-hor 0.5s linear both;
+    }
+
+ .neons {
+   margin-top: 10rem;
+   text-align: center;
+}
+
+.neons h2 {
+  font-size: 1rem;
+  text-align: center;
+   font-weight: bold;
+
+}
+
+@@-webkit-keyframes glow {
+     from {
+      color: #fff;
+    text-shadow: 0 0 10px #00fff2, 0 0 20px #00fff2, 0 0 30px #00fff2, 0 0 40px #00fff2, 0 0 50px #00fff2, 0 0 60px #00fff2, 0 0 70px #00fff2, 0 0 90px #00fff2;
+  }
+
+  to {
+     color: gray;
+    text-shadow: 0 0 20px #00fff2, 0 0 30px #00fff2, 0 0 40px #00fff2, 0 0 50px #00fff2, 0 0 60px #00fff2, 0 0 70px #00fff2, 0 0 80px #00fff2, 0 1 90px #00fff2;
+  }
+}
+
+
+    #topicDiv {
+        background-color: black;
+    }
+
+        #topicDiv:hover {
+            background-image: url('/imgs/GradientBG.jpg');
+            animation: flip-scale-up-hor 4s ease-in-out backwards;
+            transition: all 4s ease-in-out;
+        }
+
+    #topicText{
+
+        color: whitesmoke;
+        font-family: 'OCR A';
+
+    }
+
+    @@keyframes flip-scale-up-hor {
+  0% {
+    -webkit-transform: scale(1) rotateX(0);
+            transform: scale(1) rotateX(0);
+  }
+  50% {
+    -webkit-transform: scale(2.5) rotateX(-90deg);
+            transform: scale(2.5) rotateX(-90deg);
+  }
+  100% {
+    -webkit-transform: scale(1) rotateX(-180deg);
+            transform: scale(1) rotateX(-180deg);
+  }
+}
+
+
+
+
+    @@keyframes slide-fwd-top {
+  0% {
+    -webkit-transform: translateZ(0) translateY(0);
+            transform: translateZ(0) translateY(0);
+  }
+  100% {
+    -webkit-transform: translateZ(160px) translateY(-100px);
+            transform: translateZ(160px) translateY(-100px);
+  }
+}
+
+
+    
+    #hideQuestionDisplay {
+        animation: @(categoryService.wasGameStarted == true ? " rotate-scale-down-ver" : "");
+        display: @(categoryService.wasGameStarted == true ? "" : "none");
+    }
+
+    #categoryContainer {
+        animation: @(categoryService.wasGameStarted == true ? "rotate-out-2-cw" : "") 2s ease-in-out forwards;
+
+    }
+
+    #questionText {
+        color: white;
+        font-family: Consolas;
+        font-size: 2em;
+        pointer-events: none;
+        position: relative;
+    }
+
+    #CorrectanswerText {
+        animation: focus-in-expand-fwd 0.5s ease-in-out forwards;
+        transition: all 0.5s ease-in-out;
+        animation: @(displayAnswerService.wasAnswerClicked == true ? "tracking-out-expand-fwd-top" : "") 1.5s ease-in-out forwards;
+        position: relative;
+
+
+    }
+        #CorrectanswerText:hover {
+            color: black;
+            transition: all 0.5s ease-in-out;
+            opacity: 1;
+        }
+
+
+
+
+    .allAnswers{
+
+    }
+</style>
+
+
+@*CODE*@
+@code {
+
+    bool topicDivHovered = false;
+
+
+    string connectionString =>
+    $"https://opentdb.com/api.php?amount={gameLengthService.chosenGameLength}&category={categoryService.chosenCategoryNumber}&type=multiple";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await categoryService.HandleCategoryApi();
+        categoryService.MapChosenCategory();
+
+
+
+    }
+
+
+    Dictionary<string, Dictionary<string, string[]>> myDict = new Dictionary<string, Dictionary<string, string[]>>();
+
+    Dictionary<string, string[]> answerDict = new Dictionary<string, string[]>();
+
+    List<string> rightAndWrongAnswers = new List<string>();
+
+
+
+
+
+
+
+
+
+
+
+
+
+    Trivia myTriviaResult = new Trivia();
+
+    Random myRandom = new Random();
+
+
+
+
+
+
+
+    public async Task HandleFullApi()
+    {
+
+        categoryService.GetChosenCategorie();
+        categoryService.wasGameStarted = true;
+        categoryService.myTrivia = await client.GetFromJsonAsync<Trivia>
+        ($"https://opentdb.com/api.php?amount={gameLengthService.chosenGameLength}&category={categoryService.chosenCategoryNumber}&type=multiple&difficulty={difficultySService.GetFinalDifficultySelection()}");
+        myTriviaResult = categoryService.myTrivia;
+
+    }
+
+
+    public async Task GetChosenCategorie(string myCategory)
+    {
+
+
+        if (categoryService.mapCategoryDict.ContainsKey(myCategory))
+        {
+            categoryService.chosenCategoryNumber = categoryService.mapCategoryDict.GetValueOrDefault(myCategory);
+            await HandleFullApi();
+            navManager.NavigateTo("/maingame");
+
+        }
+
+
+
+    }
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,280 @@
+﻿@page "/summary"
+@inject Services.CategoryService categoryService
+@inject Services.DifficultyService difficultySService
+@inject Services.GameLengthService gameLengthService
+@inject Services.DisplayAnswerService displayAnswerService
+@inject Services.ScoringService scoringService
+@inject Services.WelcomeService welcomeService
+@inject Services.SummaryService summaryService
+@inject Services.GrabCurrentUserIDService userIDService
+@inject HttpClient client
+@inject NavigationManager navManager
+@inject AppDbContext db
+@using Services;
+@using System.Timers;
+@using System.Net.Http.Json;
+@using Data;
+@using System.Net;
+@using System.Threading;
+
+
+
+<img id="bgImg" src="/imgs/StageBG.jpg" />
+
+
+
+<section class="py-4">
+
+    <div class="container-fluid" style="display:@( wasButtonClicked == true ? "none" : "")">
+
+        <h2 style="background-color: black; font-family:'Tempus Sans ITC'" class="mb-2 text-center">Trivia Results</h2>
+        <p style="background-color:red; font-family :'Tempus Sans ITC'; color: white;" class="lead text-center">Topic: @categoryService.chosenCategory.Replace("Entertainment:", "")</p>
+        <p style=" background-color:seagreen; font-family:'Tempus Sans ITC'; color: white;" class="lead text-center">Difficulty: @difficultySService.GetFinalDifficultySelection()</p>
+
+
+
+
+        <div class="row text-white text-center">
+            <div class="col-md-3 mb-2 mb-md-4">
+                <div class="rounded py-2 bg-primary">
+                    <h2 class="mb-0">@gameLengthService.finalChosenGameLength</h2>
+                    <p class="lead mb-0">Total Questions</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-2 mb-md-4">
+                <div class="rounded py-2 bg-success">
+                    <h2 class="mb-0">@scoringService.amountOfQuestionsCorrect</h2>
+                    <p class="lead mb-0">Correct Answers</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-2 mb-md-4">
+                <div class="rounded py-2 bg-danger">
+                    <h2 class="mb-0">@scoringService.amountOfQuestionsWrong.ToString().Replace("-", "")</h2>
+                    <p class="lead mb-0">Incorrect Answers</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4 mb-md-4">
+                <div class="rounded py-2 bg-dark">
+                    <h2 class="mb-0">@finalScorePercentage%</h2>
+                    <p class="lead mb-0">Total Score</p>
+                </div>
+            </div>
+        </div>
+
+
+
+        @*TABLE*@
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th class="myTh" scope="col">Question</th>
+                        <th class="myTh" scope="col">Your Answer</th>
+                        <th class="myTh" scope="col">Correct Answer</th>
+                        <th class="myTh" scope="col">Answered Correctly</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+
+                    @foreach (var item in summaryService.mySummaryList.Where(p => p.AnswerStatus != null))
+                    {
+                        <tr style="background-color: @(item.AnsweredCorrectly == true ? "green" : "red")">
+
+                            @{ summaryQuestionNumber++;}
+
+                            <th id="questionText" scope="row">@summaryQuestionNumber .  @WebUtility.HtmlDecode($"{item.Question}")</th>
+
+
+                            <td>  @WebUtility.HtmlDecode($"{item.YourAnswer}")</td>
+
+                            <td>  @WebUtility.HtmlDecode($"{item.CorrectAnswer}")</td>
+
+                            <td>  @WebUtility.HtmlDecode($"{item.AnswerStatus}")</td>
+
+
+                        </tr>
+
+
+
+                    }
+
+
+
+                </tbody>
+
+
+            </table>
+
+
+
+
+
+
+            @*Button*@
+            <div style="text-align: center;">
+                <button style="width:400px;" @onclick="@(handleGoHome)"
+                        class="text-center" id="playAgainButton">
+                    Play Again
+                </button>
+            </div>
+
+
+        </div>
+
+
+
+
+
+    </div>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<style>
+
+    #questionText {
+        color: whitesmoke;
+        font-family: 'Agency FB';
+        font-size: 2.5em;
+    }
+
+
+    #playAgainButton {
+        background-color: darkblue;
+        color: white;
+        font-family: monospace;
+        height: 100px;
+        border-radius: 0px;
+    }
+
+    h2 {
+        color: white;
+        font-family: 'Sitka Display';
+        font-size: 2em;
+    }
+
+    .myTh {
+        color: white;
+        font-family: WRESTLEMANIA;
+        font-size: 2em;
+        background-color: black;
+    }
+
+    td {
+        color: whitesmoke;
+        font-family: 'Showcard Gothic';
+        font-size: 1.5em;
+    }
+</style>
+
+@code {
+
+    int amountOfWrong => gameLengthService.chosenGameLength - scoringService.score;
+    double totalScore => (double)gameLengthService.chosenGameLength * 100 / 100 * scoringService.score;
+    int finalScorePercentage => (int)Math.Round((double)(100 * scoringService.amountOfQuestionsCorrect) / gameLengthService.chosenGameLength);
+    int summaryQuestionNumber;
+
+    GameSnapshot myGameSnapshot;
+
+
+
+    bool wasButtonClicked = false;
+
+
+
+    void handleGoHome()
+    {
+
+        wasButtonClicked = true;
+        navManager.NavigateTo("/", true);
+    }
+
+   
+
+    void checkIfGameFinished()
+    {
+
+        if (scoringService.isGameOver == false)
+        {
+            navManager.NavigateTo("/", true);
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+
+        if (scoringService.amountOfQuestionsCorrect < 1 &&  scoringService.amountOfQuestionsWrong < 1)
+        {
+            navManager.NavigateTo("/", true);
+        }
+
+        myGameSnapshot = new GameSnapshot();
+
+
+        //Checking if user is a guest
+        if (userIDService.isUserGuest == true)
+        {
+            myGameSnapshot.UserID = "Guest" + Guid.NewGuid().ToString();
+            myGameSnapshot.GameDifficulty = difficultySService.GetFinalDifficultySelection();
+            myGameSnapshot.GameCategory = categoryService.chosenCategory.Replace("Entertainment:", "");
+            myGameSnapshot.GameLength = gameLengthService.finalChosenGameLength;
+            myGameSnapshot.DatePlayed = DateTime.Now.ToShortDateString();
+            myGameSnapshot.TimePlayed = DateTime.Now.ToShortTimeString();
+            myGameSnapshot.IncorrectAnswers = scoringService.amountOfQuestionsWrong.ToString().Replace("-", "");
+            myGameSnapshot.CorrectAnswers = scoringService.amountOfQuestionsCorrect.ToString();
+            myGameSnapshot.GameScorePercentage = finalScorePercentage;
+            db.gameSnapshots.Add(myGameSnapshot);
+            db.SaveChanges();
+
+        }
+
+
+
+
+        else
+        {
+            myGameSnapshot.UserID = db.Users.Where(p => p.NormalizedEmail == userIDService.CurrentUserEmail).FirstOrDefault().Id;
+            myGameSnapshot.GameDifficulty = difficultySService.GetFinalDifficultySelection();
+            myGameSnapshot.GameCategory = categoryService.chosenCategory.Replace("Entertainment:", "");
+            myGameSnapshot.GameLength = gameLengthService.finalChosenGameLength;
+            myGameSnapshot.DatePlayed = DateTime.Now.ToShortDateString();
+            myGameSnapshot.TimePlayed = DateTime.Now.ToShortTimeString();
+            myGameSnapshot.IncorrectAnswers = scoringService.amountOfQuestionsWrong.ToString().Replace("-", "");
+            myGameSnapshot.CorrectAnswers = scoringService.amountOfQuestionsCorrect.ToString();
+            myGameSnapshot.GameScorePercentage = finalScorePercentage;
+            db.gameSnapshots.Add(myGameSnapshot);
+            db.SaveChanges();
+
+
+        }
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+}
+

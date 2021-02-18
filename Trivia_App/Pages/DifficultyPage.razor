@@ -1,0 +1,10 @@
+﻿@page "/difficulty"
+@inject Services.WelcomeService welcomeService
+
+
+<img id="bgImg" src="/imgs/GradientBG.jpg" />
+
+<div style="display:@(welcomeService.wasMenuClicked == true ? "" : "none"); margin-bottom: 75px;">
+    <Trivia_App.Components.Display_Difficulties />
+
+</div>

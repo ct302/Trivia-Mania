@@ -1,0 +1,868 @@
+﻿@page "/mainGame"
+@inject Services.CategoryService categoryService
+@inject Services.DifficultyService difficultySService
+@inject Services.GameLengthService gameLengthService
+@inject Services.DisplayAnswerService displayAnswerService
+@inject Services.ScoringService scoringService
+@inject Services.WelcomeService welcomeService
+@inject Services.SummaryService summaryService
+@inject Services.LifelineService lifelineService
+@inject HttpClient client
+@inject NavigationManager navManager
+@using Services;
+@using System.Timers;
+@using System.Net.Http.Json;
+@using Data;
+@using System.Net;
+@using System.Threading;
+
+
+
+<img id="bgImg" src="/imgs/GradientBG.jpg" />
+
+
+<div class="py-2" style="pointer-events:@(disableClickEvents == true ? "none" : ""); overflow:hidden;">
+
+
+
+
+
+    @foreach (var item in myCustomResults.Where(p => p.ResultID == questionIndexNumber))
+    {
+
+
+        formattedCorrectAnswer = item.CorrectAnswer;
+        timeoutQuestion = item.Question;
+
+        <div>
+            <h1 class="text-center display-1" id="timesUpText">@displayTimeOver</h1>
+            <h1 id="timesUpText" style="color: pink;" class="display-1 text-center text-success text-blur-out">Correct answer:  @WebUtility.HtmlDecode($"{formattedCorrectAnswer}")</h1>
+
+
+        </div>
+
+
+
+
+        <div class="m-5" style="display:@(displayQuestionAndAnswers == false ? "" : "none")">
+
+
+            <h1 id="lifelineText"
+                                     class="display-1 text-center">@lifelineStatusMsg</h1>
+
+
+
+            <h1 style="font-family:CursedTimerUlil-Aznm; background-color: black; border: 3px solid white; color:white; font-size: 4em;" class="text-center clock; time">Time: @timerDisplay</h1>
+            <p class="border-bottom-0 display-1 text-center" style="color: ghostwhite; pointer-events: none; position: relative; font-size: 2em;  display:@(disableClickEvents == true ? "none" : "") ">
+                Question @questionIndexNumber   @WebUtility.HtmlDecode($"{item.Question}")
+            </p>
+
+            <div style="pointer-events:@(lifelineService.wasLifelineUsed == true ? "none" : ""); display:@(disableClickEvents == true ? "none" : "")">
+
+                <p style="display:@(lifelineService.wasLifelineUsed == true ? "none" : "") " id="answerText" @onclick="@(() => checkAnswer(item.Answer1, item.CorrectAnswer, item.Question) )">A. @WebUtility.HtmlDecode($"{item.Answer1}")</p>
+                <p style="display:@(lifelineService.wasLifelineUsed == true ? "none" : "") " id="answerText" @onclick="@(() => checkAnswer(item.Answer2, item.CorrectAnswer, item.Question) )">B. @WebUtility.HtmlDecode($"{item.Answer2}")</p>
+                <p style="display:@(lifelineService.wasLifelineUsed == true ? "none" : "") " id="answerText" @onclick="@(() => checkAnswer(item.Answer3, item.CorrectAnswer, item.Question) )">C. @WebUtility.HtmlDecode($"{item.Answer3}")</p>
+                <p style="display:@(lifelineService.wasLifelineUsed == true ? "none" : "") " id="answerText" @onclick="@(() => checkAnswer(item.Answer4, item.CorrectAnswer, item.Question) )">D. @WebUtility.HtmlDecode($"{item.Answer4}")</p>
+
+
+
+            </div>
+
+
+
+            <p style="display:@(lifelineService.wasLifelineUsed == true ? "" : "none") " id="answerText" @onclick="@(() => checkAnswer(item.CorrectAnswer, item.CorrectAnswer, item.Question) )">A. @WebUtility.HtmlDecode($"{item.CorrectAnswer}")</p>
+            @if (item.Answer2 == item.CorrectAnswer)
+            {
+                lifeLineAnswer = item.Answer3;
+
+            }
+
+            else
+            {
+                lifeLineAnswer = item.Answer2;
+            }
+
+
+
+
+            <p style="display:@(lifelineService.wasLifelineUsed == true ? "" : "none") " id="answerText" @onclick="@(() => checkAnswer(lifeLineAnswer, item.CorrectAnswer, item.Question) )">B. @WebUtility.HtmlDecode($"{lifeLineAnswer}")</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <h1 id="answerStatusText">@answerStatus</h1>
+
+            <h1 id="correctAnswerText" style="color: pink; display:@(wasAnswerInCorrect == true ? "" : "none");" class="display-1 text-center text-success">Correct answer:  @WebUtility.HtmlDecode($"{formattedCorrectAnswer}")</h1>
+
+            <div style="text-align: center; display:@(dontDisplayLifeline == true ? "none" : "")">
+
+                <button @onclick="@( () => useLifeline(item.CorrectAnswer) )" style=" border-radius: 0px; height: 100px; width: 300px; font-family: 'Bell MT'; font-size: 3em; background-color: darkblue; text-align:center;" class="btn btn-success">
+                    Use 50/50
+
+
+                </button>
+
+            </div>
+            <div>
+
+                <h1 style="font-size: 2em; color:green;" class="text-center text-success">Answers Correct:  @questionsAnsweredCorrectly </h1>
+                <h1 style="font-size: 2em; color:green;" class="text-center text-danger">Answers Incorrect: @questionsAnsweredInCorrectly </h1>
+
+            </div>
+
+
+        </div>
+
+
+    }
+
+
+</div>
+
+
+
+
+
+<div class="py-4" id="goHomeDiv" style="display:@(questionIndexNumber > gameLengthService.chosenGameLength ? "" : "none"); text-align: center;">
+    <h1 class="text-center" style=" position: relative; font-size: 3em; margin-left: auto; margin-right: auto; z-index: 100;">@gameStatus</h1>
+    <h1 class="text-center" style="position: relative; font-size: 3em; margin-left: auto; margin-right: auto; z-index: 100;">@scoreDisplay</h1>
+    <button class="btn-success mb-5" style="height:80px; width:300px;" @onclick="@(goHome)">Go To Summary</button>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<style>
+
+
+    #goHomeDiv{
+
+        color: white;
+        background-color: seagreen;
+        font-family: Algerian;
+        position: relative;
+        margin: auto;
+
+    }
+
+
+    #lifelineText {
+        animation: tilt-in-fwd-tr 1s ease-in-out forwards;
+        background-color: black;
+        font-family: Broadway;
+        font-size: 1.5em;
+        color: gold;
+        border: 2px solid gold;
+        display:@(lifelineService.wasLifelineUsed == true ? "" : "none");
+        clip-path: polygon(20% 0%, 80% 0%, 100% 20%, 100% 80%, 80% 100%, 20% 100%, 0% 80%, 0% 20%);
+    }
+
+
+    @@keyframes tilt-in-fwd-tr {
+  0% {
+    -webkit-transform: rotateY(20deg) rotateX(35deg) translate(300px, -300px) skew(-35deg, 10deg);
+            transform: rotateY(20deg) rotateX(35deg) translate(300px, -300px) skew(-35deg, 10deg);
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: rotateY(0) rotateX(0deg) translate(0, 0) skew(0deg, 0deg);
+            transform: rotateY(0) rotateX(0deg) translate(0, 0) skew(0deg, 0deg);
+    opacity: 1;
+  }
+}
+
+
+    .text-pop-up-top {
+        -webkit-animation: text-pop-up-top 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+        animation: text-pop-up-top 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+    }
+
+
+    @@keyframes text-pop-up-top {
+  0% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+    -webkit-transform-origin: 50% 50%;
+            transform-origin: 50% 50%;
+    text-shadow: none;
+  }
+  100% {
+    -webkit-transform: translateY(-50px);
+            transform: translateY(-50px);
+    -webkit-transform-origin: 50% 50%;
+            transform-origin: 50% 50%;
+    text-shadow: 0 1px 0 #cccccc, 0 2px 0 #cccccc, 0 3px 0 #cccccc, 0 4px 0 #cccccc, 0 5px 0 #cccccc, 0 6px 0 #cccccc, 0 7px 0 #cccccc, 0 8px 0 #cccccc, 0 9px 0 #cccccc, 0 50px 30px rgba(0, 0, 0, 0.3);
+  }
+}
+    @@keyframes puff-in-center {
+  0% {
+    -webkit-transform: scale(2);
+            transform: scale(2);
+    -webkit-filter: blur(4px);
+            filter: blur(4px);
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+    -webkit-filter: blur(0px);
+            filter: blur(0px);
+    opacity: 1;
+  }
+}
+
+
+    #answerStatusText {
+        color: @(wasAnswerInCorrect == true ? "red" : "green");
+        font-size: 3em;
+        font-family: 'Gill Sans';
+        transition: all 1s ease-in-out;
+        text-align: center;
+        transition: all 2s ease-in-out;
+        animation: @(answerStatus == null ? "" : "puff-in-center ease-in-out forwards");
+        animation-duration:@(wasAnswerInCorrect == true ? "1s" : "1s");
+    }
+
+    .clock {
+        font-family: 'Share Tech Mono', monospace;
+        color: #ffffff;
+        text-align: center;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        color: #daf6ff;
+        text-shadow: 0 0 20px rgba(10, 175, 230, 1), 0 0 20px rgba(10, 175, 230, 0);
+    }
+
+    .time
+    {
+        letter-spacing: 0.05em;
+        font-size: 80px;
+    }
+
+    .date {
+        letter-spacing: 0.1em;
+        font-size: 24px;
+    }
+
+    .text {
+        letter-spacing: 0.1em;
+        font-size: 12px;
+        padding: 20px 0 0;
+    }
+
+
+
+
+    @@keyframes text-blur-out {
+  0% {
+    -webkit-filter: blur(0.01);
+            filter: blur(0.01);
+  }
+  100% {
+    -webkit-filter: blur(12px) opacity(0%);
+            filter: blur(12px) opacity(0%);
+  }
+}
+
+    .text-blur-out {
+        -webkit-animation: text-blur-out 3.2s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
+        animation: text-blur-out 3.2s cubic-bezier(0.550, 0.085, 0.680, 0.530)  both;
+    }
+
+    #timesUpText{
+
+        display:@(playersTimeRanOut == true ? "" : "none");
+
+    }
+
+
+@@font-face {
+    font-family: 'CursedTimerUlil-Aznm';
+    src: url('file:///C:\Users\heads\source\repos\Trivia_App\Trivia_App\wwwroot\css\open-iconic\font\fonts\CursedTimerUlil-Aznm.ttf') format('truetype');
+}
+
+    #correctAnswerText{
+
+        animation: text-pop-up-top ease-in-out infinite;
+        animation-duration:@(wasAnswerInCorrect == true ? "4s" : "6s");
+
+
+    }
+
+    #answerText {
+        position: relative;
+        left: 20px;
+        color: whitesmoke;
+        font-family: monospace;
+        font-size: 2em;
+    }
+
+
+        #answerText:hover {
+            color: silver;
+            transition: all 0.5s ease-in;
+            background-color: seagreen;
+        }
+
+    #questionText {
+        left: 20px;
+        position: relative;
+        border-bottom: 2px solid black;
+        font-family: 'Berlin Sans FB';
+        color: white;
+        font-size: 3em;
+    }
+</style>
+
+@code {
+
+    bool wasAnswerInCorrect = false;
+
+    bool displayQuestionAndAnswers = false;
+
+    string lifeLineAnswer;
+
+    GameSnapshot gameSnapshot;
+
+
+    bool disableClickEvents = false;
+
+
+    System.Timers.Timer t;
+
+
+    bool displayAnswer = false;
+
+    bool displayMyCorrectAnswer;
+
+    string myAnswer;
+
+    int myIndex;
+
+
+
+
+    List<string> myAnswerList = new List<string>();
+
+    List<string[]> ListOfAnswers = new List<string[]>();
+
+    int finalScore => gameLengthService.chosenGameLength - questionsAnsweredInCorrectly;
+
+    string scoreDisplay => $"You answered {questionsAnsweredCorrectly} questions correctly out of {gameLengthService.chosenGameLength}";
+
+    bool isGameOver = false;
+
+    string gameStatus = "";
+
+
+    int questionIndexNumber = 1;
+
+    IEnumerable<int> questionNumberRange;
+
+    List<CustomResults> myCustomResults = new List<CustomResults>();
+
+
+
+    string[] myAnswerArr;
+
+    List<string> correctAnswers;
+
+
+    double myFinalScore;
+
+    string CorrectAnswerString;
+
+
+    string question;
+
+    string answerStatus;
+
+    string formattedCorrectAnswer;
+
+    int questionCount = 1;
+
+    bool wasAnswerClicked = false;
+
+    int questionsAnsweredCorrectly = 0;
+
+    int questionsAnsweredInCorrectly = 0;
+
+    int responseResult;
+
+
+
+
+
+
+    Trivia myTriviaResult = new Trivia();
+
+    Random myRandom = new Random();
+
+    Random r = new Random();
+
+
+
+    int currentCounter;
+
+
+    string timeElasped;
+
+    int timerDisplay = 15;
+
+    string timeoutQuestion;
+
+    string displayTimeOver;
+
+    bool playersTimeRanOut = false;
+
+
+
+
+
+
+    List<string> lifelineAnswers = new List<string>();
+    List<string> shuffledAnswers = new List<string>();
+    string lifelineStatusMsg;
+
+    //Methods
+
+    async Task displayTimesUpMessage()
+    {
+        Task.Delay(1000);
+        lifelineService.wasLifelineUsed = false;
+        lifelineStatusMsg = null;
+        displayTimeOver = "Time's Up!";
+        summaryService.mySummary.AnswerStatus = "Incorrect!";
+        summaryService.mySummary.AnsweredCorrectly = false;
+        summaryService.mySummary.CorrectAnswer = "N/A";
+        summaryService.mySummary.YourAnswer = "Time Ran Out!";
+        summaryService.mySummaryList.Add(summaryService.mySummary);
+        summaryService.mySummary = new Summary();
+        displayQuestionAndAnswers = true;
+
+        disableClickEvents = true;
+        wasAnswerInCorrect = true;
+        playersTimeRanOut = true;
+        await InvokeAsync(this.StateHasChanged);
+        await Task.Delay(3000);
+        wasAnswerInCorrect = false;
+        displayQuestionAndAnswers = false;
+        timerDisplay = 15;
+        displayTimeOver = null;
+        playersTimeRanOut = false;
+        questionIndexNumber++;
+        disableClickEvents = false;
+        t.Start();
+        await InvokeAsync(StateHasChanged);
+
+
+    }
+
+    async Task hideAnswer()
+    {
+        t.Stop();
+
+        timerDisplay = 15;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    void goHome()
+    {
+        summaryService.mySummaryList.Add(summaryService.mySummary);
+        navManager.NavigateTo("/summary");
+
+
+
+    }
+
+
+    bool dontDisplayLifeline = false;
+
+    async void useLifeline(string currentCorrectAnswer)
+    {
+        dontDisplayLifeline = true;
+
+        lifelineService.wasLifelineUsed = true;
+
+        lifelineStatusMsg = "50/50 Used"!;
+
+        timerDisplay = 15;
+
+
+        await InvokeAsync(StateHasChanged);
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    async void checkAnswer(string answer, string correctAnswer, string myQuestion)
+    {
+        lifelineStatusMsg = null;
+        lifelineService.wasLifelineUsed = false;
+        summaryService.mySummary.Question = myQuestion;
+        CorrectAnswerString = correctAnswer;
+        formattedCorrectAnswer = $"Correct Answer is: {WebUtility.HtmlDecode(CorrectAnswerString)} ";
+        t.Stop();
+        questionCount = 1;
+        wasAnswerClicked = !wasAnswerClicked;
+        checkQuestionNumber();
+
+        if (correctAnswers.Contains(answer))
+        {
+
+            questionsAnsweredCorrectly++;
+            disableClickEvents = true;
+            answerStatus = $"{WebUtility.HtmlDecode(answer)} is Correct!";
+            await InvokeAsync(this.StateHasChanged);
+            await Task.Delay(3000);
+            formattedCorrectAnswer = null;
+            answerStatus = null;
+
+            summaryService.mySummary.AnsweredCorrectly = true;
+            summaryService.mySummary.AnswerStatus = "Correct!";
+            summaryService.mySummary.CorrectAnswer = correctAnswer;
+            summaryService.mySummary.YourAnswer = answer;
+            summaryService.mySummaryList.Add(summaryService.mySummary);
+            summaryService.mySummary = new Summary();
+
+            disableClickEvents = false;
+            timerDisplay = 15;
+            t.Start();
+            questionIndexNumber++;
+            await InvokeAsync(StateHasChanged);
+
+        }
+
+        else if (correctAnswers.Contains(answer) != true)
+        {
+
+            questionsAnsweredInCorrectly++;
+            scoringService.amountOfQuestionsWrong = questionsAnsweredInCorrectly;
+
+            summaryService.mySummary.AnsweredCorrectly = false;
+            summaryService.mySummary.AnswerStatus = "Incorrect!";
+
+            summaryService.mySummary.CorrectAnswer = correctAnswer;
+            summaryService.mySummary.YourAnswer = answer;
+            summaryService.mySummaryList.Add(summaryService.mySummary);
+            summaryService.mySummary = new Summary();
+
+            wasAnswerInCorrect = true;
+            disableClickEvents = true;
+
+
+            answerStatus = @WebUtility.HtmlDecode($"{answer} is Incorrect!");
+            await InvokeAsync(StateHasChanged);
+            await Task.Delay(3000);
+            formattedCorrectAnswer = null;
+            answerStatus = null;
+            wasAnswerInCorrect = false;
+
+            displayAnswer = false;
+            await Task.Run(hideAnswer);
+            answer = null;
+            disableClickEvents = false;
+            await InvokeAsync(StateHasChanged);
+            questionIndexNumber++;
+            t.Start();
+            await InvokeAsync(StateHasChanged);
+
+        }
+
+        else
+        {
+            await displayTimesUpMessage();
+        }
+
+
+    }
+
+
+    void handleTimer(object sender, ElapsedEventArgs e)
+    {
+        scoringService.amountOfQuestionsCorrect = questionsAnsweredCorrectly;
+        scoringService.amountOfQuestionsWrong = questionsAnsweredInCorrectly;
+
+        timerDisplay--;
+        InvokeAsync(this.StateHasChanged);
+
+
+
+
+        if (timerDisplay == 0)
+        {
+            summaryService.mySummary.Question = timeoutQuestion;
+            Task.Run(displayTimesUpMessage);
+            Task.Run(hideAnswer);
+            timerDisplay = 15;
+            questionsAnsweredInCorrectly++;
+            scoringService.amountOfQuestionsWrong = questionsAnsweredInCorrectly;
+            InvokeAsync(this.StateHasChanged);
+
+
+        }
+
+        timeElasped = e.SignalTime.Second.ToString();
+        InvokeAsync(this.StateHasChanged);
+
+
+    }
+
+    void checkQuestionNumber()
+    {
+        if (questionIndexNumber >= gameLengthService.chosenGameLength)
+        {
+            scoringService.amountOfQuestionsCorrect = questionsAnsweredCorrectly;
+            scoringService.amountOfQuestionsWrong = questionsAnsweredInCorrectly;
+            isGameOver = true;
+            scoringService.isGameOver = true;
+            gameStatus = "Game Over!";
+            InvokeAsync(StateHasChanged);
+
+        }
+
+        else
+        {
+            StateHasChanged();
+
+        }
+    }
+
+    void mapResults()
+    {
+
+        responseResult = myTriviaResult.Response_code;
+
+
+        if (categoryService.myTrivia.Results == null)
+        {
+
+        }
+        else
+        {
+
+            if (categoryService.myTrivia.Results.Length < 3)
+            {
+
+
+                navManager.NavigateTo("/error");
+
+
+
+            }
+            else
+            {
+
+                foreach (var item in categoryService.myTrivia.Results)
+                {
+
+
+                    summaryService.mySummary.Question = item.Question;
+
+
+                    currentCounter--;
+
+
+                    question = item.Question;
+
+                    correctAnswers.Add(item.Correct_answer);
+
+
+
+                    string[] answerArr = new string[] { item.Correct_answer, item.Incorrect_answers[0], item.Incorrect_answers[1], item.Incorrect_answers[2] };
+
+                    answerArr = answerArr.OrderBy(x => r.Next()).ToArray();
+
+                    myCustomResults.Add(new CustomResults()
+                    {
+                        Question = item.Question,
+                        Answer1 = answerArr[0],
+                        Answer2 = answerArr[1],
+                        Answer3 = answerArr[2],
+                        Answer4 = answerArr[3],
+                        CorrectAnswer = item.Correct_answer,
+                        ResultID = currentCounter
+
+                    });
+
+                }
+            }
+
+
+
+        }
+
+    }
+
+    void updateQuestionCounter()
+    {
+        questionCount++;
+
+
+    }
+
+
+    void handleLocationChange(object sender, LocationChangedEventArgs args)
+    {
+
+        switch (args.Location)
+        {
+            case "https://localhost:44310/summary":
+                break;
+
+            case "https://localhost:44310/error":
+                break;
+
+            default:
+                navManager.NavigateTo("/", true);
+                break;
+
+        }
+
+
+
+
+    }
+
+
+    protected override void OnInitialized()
+    {
+
+        navManager.LocationChanged += handleLocationChange;
+
+
+        t = new System.Timers.Timer() { AutoReset = true, Enabled = true, Interval = 1000 };
+
+        t.Elapsed += handleTimer;
+
+        t.Start();
+
+
+
+
+        myAnswerArr = new string[] { };
+
+        gameSnapshot = new GameSnapshot();
+
+        currentCounter = gameLengthService.chosenGameLength + 1;
+
+        questionNumberRange = Enumerable.Range(1, gameLengthService.chosenGameLength);
+
+        correctAnswers = new List<string>();
+
+        mapResults();
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

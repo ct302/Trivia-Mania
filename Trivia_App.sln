@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30225.117
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trivia_App", "Trivia_App\Trivia_App.csproj", "{0396BF41-63B2-466C-93DE-BF1B45AC133A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "API\API.csproj", "{675EE589-E8B0-4FB1-818B-E1325DCCB8A2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0396BF41-63B2-466C-93DE-BF1B45AC133A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0396BF41-63B2-466C-93DE-BF1B45AC133A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0396BF41-63B2-466C-93DE-BF1B45AC133A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0396BF41-63B2-466C-93DE-BF1B45AC133A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{675EE589-E8B0-4FB1-818B-E1325DCCB8A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{675EE589-E8B0-4FB1-818B-E1325DCCB8A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{675EE589-E8B0-4FB1-818B-E1325DCCB8A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{675EE589-E8B0-4FB1-818B-E1325DCCB8A2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {43AE718E-0352-49E4-B91D-AD9A24D1D1DE}
+	EndGlobalSection
+EndGlobal

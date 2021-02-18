@@ -1,0 +1,15 @@
+﻿@inject Services.CategoryService categoryService
+@inject Services.DifficultyService difficultyService
+@inject Services.GameLengthService gameLengthService
+
+<h1 class="display-1" style="color:white">Are all of your settings correct ? </h1>
+
+<div class="container">
+
+    <ul>
+        <li>
+            @($"Chosen Category: {categoryService.chosenCategory}")
+        </li>
+    </ul>
+
+</div>

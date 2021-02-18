@@ -1,0 +1,162 @@
+﻿@page "/welcome"
+@attribute [Authorize(Roles = "Admin")]
+@inject Services.CategoryService categoryService
+@inject Services.DifficultyService difficultySService
+@inject Services.GameLengthService gameLengthService
+@inject Services.DisplayAnswerService displayAnswerService
+@inject Services.ScoringService scoringService
+@inject Services.WelcomeService welcomeService
+@inject Services.SummaryService summaryService
+@inject Services.GrabCurrentUserIDService userIDService
+@inject HttpClient client
+@inject NavigationManager navManager
+@inject AppDbContext db
+@using Services;
+@using System.Timers;
+@using System.Net.Http.Json;
+@using Data;
+@using System.Net;
+@using System.Threading;
+@using Components
+
+<Trivia_App.Pages.Shared.LoginDisplay />
+
+<img id="bgImg" src="/imgs/GradientBG.jpg" />
+<AuthorizeView>
+
+
+    <Authorized>
+
+
+        <div style=" display:@(welcomeService.wasMenuClicked == true ? "none" : "");  text-align: center;" class="container" id="welcomeContainer" @onclick="@( () => welcomeService.wasMenuClicked = true)">
+
+            <h1 style="color:gold;">
+                Welcome
+                <span style="display: block; position:relative; top: 50px;">To</span>
+            </h1>
+            <h4 id="headingText" class="display-2" style="font-family: WRESTLEMANIA; color: cadetblue;">Trivia Mania</h4>
+        </div>
+        
+
+        <span id="hiddenDifficultyMenu" style="display:@(welcomeService.wasMenuClicked == true ? "" : "none")">
+            <Trivia_App.Components.Display_Difficulties />
+
+        </span>
+
+        <div style="text-align: center; background-color: black; height:100px; margin-top: 125px; display:@(welcomeService.wasMenuClicked == true ? "none" : "");
+            background-image: url(imgs/cce82af5d54bf21dd8a820df0e5d07f3.jpg)" >
+            <button style="position: relative; color:gold; font-family: WRESTLEMANIA; width: 250px; top: 25px; font-size: 1.5em; " class="btn btn-success" @onclick="@(gotoUserHistory)">View Game History</button>
+
+        </div>
+
+
+    </Authorized>
+
+
+
+
+
+
+    <NotAuthorized>
+
+
+
+
+        <div class=" py-4" style=" color:goldenrod; text-align:  center; position: relative; top: 200px; font-family: WRESTLEMANIA;">
+
+            <h4  id="headingText" class="display-2" style="font-family: WRESTLEMANIA; color: cadetblue; font-size: 8em; bottom: 200px; position: relative;">Trivia Mania</h4>
+
+
+
+            <div style=" color: white; height: 75px; width: 250px; position: relative; margin: auto; font-family: Arial, Helvetica, sans-serif;">
+
+                <div class="col-12 py-5" style="text-align: center; background-color: black; position: relative; bottom: 250px;">
+
+                    <h1>Demo Admin Credentials</h1>
+                    <p>E-Mail: Admin123@gmail.com</p>
+                    <p>Password: Abc123!</p>
+
+
+                </div>
+            </div>
+
+        </div>
+
+
+    </NotAuthorized>
+
+
+
+
+</AuthorizeView>
+
+
+
+
+@code {
+
+
+    string Id;
+
+    void gotoUserHistory()
+    {
+        Id = db.Users.Where(p => p.NormalizedEmail == userIDService.CurrentUserEmail).FirstOrDefault().Id;
+
+
+        navManager.NavigateTo($"/userhistory/{Id}");
+    }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<style>
+
+
+    #headingText::first-letter {
+        font-size: 2em;
+    }
+
+
+    @@font-face {
+        font-family: 'WRESTLEMANIA';
+        src: url('file:///C:\Users\heads\source\repos\Trivia_App\Trivia_App\wwwroot\css\open-iconic\font\fonts\WRESTLEMANIA.ttf') format('truetype');
+    }
+
+    #welcomeContainer {
+        animation: @(welcomeService.wasMenuClicked == true ? "slide-out-fwd-center" : "" ) 1s ease-in-out forwards;
+        pointer-events: @(welcomeService.wasMenuClicked == true ? "none" : "");
+        transition: all 0.5s ease-in-out;
+        position: relative;
+        top: 100px;
+        background-color: black;
+        min-width: 100%;
+        clip-path: circle(50% at 50% 50%);
+        text-shadow: 2px 2px 4px #000000;
+    }
+
+    #hiddenDifficultyMenu {
+        visibility: @(welcomeService.wasMenuClicked == true ? "" : "hidden");
+    }
+
+
+
+</style>

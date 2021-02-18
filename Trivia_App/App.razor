@@ -1,0 +1,29 @@
+﻿@inject NavigationManager navManager  
+
+
+<CascadingAuthenticationState>
+
+    <Router AppAssembly="@typeof(Program).Assembly">
+        <Found Context="routeData">
+            <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        </Found>
+        <NotFound>
+            <LayoutView Layout="@typeof(MainLayout)">
+                   <img id="bgImg" src="/imgs/StarsBG.jpg" />
+                <h1 class="display-1" style="text-align: center; color: white; font-family:'Arial Rounded MT'">404 Error! No Page Found!</h1>
+                <div class="col-12" style="text-align:center">
+                <button class="btn btn-success" @onclick ="@( () => navManager.NavigateTo("/",true))">Go Home</button>
+
+                </div>
+            </LayoutView>
+        </NotFound>
+    </Router>
+</CascadingAuthenticationState>
+
+<style>
+
+
+</style>
+@code {
+
+}

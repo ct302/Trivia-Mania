@@ -1,0 +1,119 @@
+﻿@page "/history";
+@inject Services.CategoryService categoryService
+@inject Services.DifficultyService difficultySService
+@inject Services.GameLengthService gameLengthService
+@inject Services.DisplayAnswerService displayAnswerService
+@inject Services.ScoringService scoringService
+@inject Services.WelcomeService welcomeService
+@inject Services.SummaryService summaryService
+@inject HttpClient client
+@inject NavigationManager navManager
+@inject AppDbContext db
+@inject HttpClient client;
+@using Services;
+@using System.Timers;
+@using System.Net.Http.Json;
+@using Data;
+@using System.Net;
+@using System.Threading;
+
+<AuthorizeView Roles="Admin">
+
+
+    <Authorized>
+
+
+     <div class="container" style="background-color: seagreen; color: white; font-family: Centaur; text-align: center;">
+         <h1 class="display-1" style="text-align: center; color: black;">@deletionMsg</h1>
+         <h1 class="text-center display-1" style="border-bottom: 2px solid black ;">Master Game History</h1>
+         <div class="col-12" style="text-align: center;">
+
+             @if (gameSnapshots == null)
+             {
+                 <div style="position: relative; margin-left: auto; margin-right: auto; top:200px; height: 150px; width: 150px;">
+
+                     <h1 style="text-align: center;"> <span class="spinner-grow"></span>Loading..</h1>
+                 </div>
+             }
+
+             else
+             {
+
+             @foreach (var item in gameSnapshots.OrderByDescending(p => p.DatePlayed).OrderByDescending(p => p.TimePlayed))
+             {
+
+
+
+                 <div class="col-12" style="text-align: center; border-bottom:2px solid black;">
+
+                     <p>Game ID: @item.GameID</p>
+                     <p>User ID: @item.UserID</p>
+                     <p>Category: @item.GameCategory</p>
+                     <p>Difficulty: @item.GameDifficulty</p>
+                     <p>Score Percentage: @item.GameScorePercentage%</p>
+                     <p>Game Length: @item.GameLength</p>
+                     <p>Date Played: @item.DatePlayed</p>
+                     <p>Time Played: @item.TimePlayed</p>
+                     <p>Correct Answers: @item.CorrectAnswers</p>
+                     <p>Wrong Answers: @item.IncorrectAnswers</p>
+
+                     <button @onclick="@(() => deleteGame(item.UserID))"  class="btn-danger btn" style="height: 100px; width: 100px;">Delete Game</button>
+
+                 </div>
+             }
+             }
+
+         </div>
+
+</div>
+
+    </Authorized>
+
+
+
+    <NotAuthorized>
+
+
+        <h1 style="color:red; font-size:6em; text-align:center;">Admin Access Only!</h1>
+    </NotAuthorized>
+
+</AuthorizeView>
+
+
+<style>
+    p {
+        border-right: 2px dotted white;
+        border-left: 2px dotted white;
+    }
+</style>
+
+
+@code {
+
+
+    string deletionMsg;
+
+    List<GameSnapshot> gameSnapshots;
+
+    protected override async Task OnInitializedAsync()
+    {
+        gameSnapshots = await client.GetFromJsonAsync<List<GameSnapshot>>("https://localhost:44379/api/gamesnapshot");
+
+
+    }
+
+
+
+    async Task deleteGame(string UserID)
+    {
+        await client.DeleteAsync($"https://localhost:44379/api/gamesnapshot/{UserID}");
+        await InvokeAsync(StateHasChanged);
+        deletionMsg = "Deleted!";
+        navManager.NavigateTo("/history", true);
+
+
+    }
+
+
+
+}

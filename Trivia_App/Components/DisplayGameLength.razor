@@ -1,0 +1,90 @@
+﻿@inject Services.GameLengthService gameLengthService
+@inject NavigationManager navManager
+
+<h4 class="text-center display-1 hideDifficultyDisplay" style="color: white;">Please choose game length</h4>
+
+
+<h4 class="text-center hideDifficultyDisplay">Chosen Game Length: @gameLengthService.chosenGameLength Questions</h4>
+
+
+@*Game Length Display*@
+<div class="hideDifficultyDisplay" id="gameLengthDiv" >
+
+    <select id="optionText" class="hideDifficultyDisplay" @bind="gameLengthService.chosenGameLength" @onclick="gameLengthService.GetGameLength">
+
+        <option> @("Please choose a Game Length")</option>
+
+        <option> @gameLengthService.VeryShortGame</option>
+        <option> @gameLengthService.ShortGame</option>
+        <option> @gameLengthService.MediumGame</option>
+        <option> @gameLengthService.LongGame</option>
+
+    </select>
+
+</div>
+
+
+
+
+@*Categories Component Hidden until Difficulty Selected*@
+<div id="hideCategoryMenu" class="container">
+    @*<Display_Categories/>*@
+    <DisplayCategories2/>
+</div>
+
+
+
+@*CSS Styles*@
+<style>
+
+
+    #optionText {
+
+        color: black; font-family: 1em;
+
+    }
+
+    #gameLengthDiv {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: center;
+        align-content: center;
+        align-items: flex-start;
+    }
+
+    #gameLength {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        justify-content: center;
+        align-content: center;
+        align-items: center;
+    }
+
+    #hideCategoryMenu {
+
+        display: @(gameLengthService.wasGameLengthSelected == true ? "" : "none");
+        animation: @(gameLengthService.wasGameLengthSelected == true ? "focus-in-expand-fwd" : "") 1.5s ease-in-out forwards;
+        transition: all 2s ease-in-out; 
+        position: relative;
+        min-height: 100%;
+        min-width: 100%;
+        background-size: cover;
+        
+
+    }
+
+    .hideDifficultyDisplay {
+
+        animation: @(gameLengthService.wasGameLengthSelected == true ? "tracking-out-contract" : "") 1.5s forwards ease-in-out;
+        transition: all 2s ease-in-out;
+        color: white;
+        font-family: 'Agency FB';
+    }
+
+
+
+</style>
+
+

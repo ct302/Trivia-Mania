@@ -1,0 +1,19 @@
+﻿@page "/error"
+@inject NavigationManager navManager
+
+<img id="bgImg" src="/imgs/Construction.jpg" />
+<div class="container;" style="background-color: gold; text-align: center;">
+    
+    <div  class=" py-5" style="border: 2px solid white">
+    <h1>Sorry!</h1>
+    <h1>Not enough questions in API for Chosen Category</h1>
+    <p>Please try selecting  a Different amount of Questions or Category!</p>
+    <button @onclick="@( () => navManager.NavigateTo("/",true))" style=" border-radius: 0px; height: 100px; width: 300px; font-family: 'Berlin Sans FB'; font-size: 3em; background-color: darkblue; text-align:center;" class="btn btn-success">Home</button>
+
+
+    </div>
+
+
+</div>
+
+

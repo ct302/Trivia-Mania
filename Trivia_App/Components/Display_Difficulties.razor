@@ -1,0 +1,138 @@
+﻿@inject Services.DifficultyService difficultyService
+@inject NavigationManager navManager
+
+
+
+<div style="display: @(difficultyService.WasDifficultySelected == true? "" : "none"); position: relative; top: 100px;">
+<DisplayGameLength/>
+</div>
+
+
+<div class="container @(difficultyService.WasDifficultySelected == true ? "inivisibleAnimation" : "")" id="difficultyContainer" style="text-overflow: ellipsis; overflow: hidden; overflow-wrap: break-word; display: @(difficultyService.WasDifficultySelected == true? "none" : ""); ">
+
+    <h4 style="background-color: black; color: white; font-family: sans-serif;" class="text-center" id="difficultyHeaderText">Please select a Difficulty</h4>
+
+    <div class="col-12 text-center difficultyEasy" @onclick="@( () => difficultyService.isEasyChecked = !difficultyService.isEasyChecked )" style=" height: 35vh;">
+
+        <p id="difficultyText">Easy</p>
+
+    </div>
+
+    <div class="col-12 text-center difficultyMedium" @onclick="@( () => difficultyService.isMediumChecked = !difficultyService.isMediumChecked)" style="background-color: purple; height: 35vh;">
+
+
+        <p id="difficultyText">Medium</p>
+
+    </div>
+
+    <div class="col-12 text-center difficultyHard" @onclick="@( () => difficultyService.isHardChecked = !difficultyService.isHardChecked)" style="background-color: green; height: 35vh;">
+
+        <p id="difficultyText">Hard</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<style>
+
+
+       .difficultyEasy {
+            animation: @(difficultyService.isEasyChecked == true ? "rotate-scale-down-ver" : "") 2s ease-in;
+            background-image: url('../imgs/StarsBG.jpg');
+            background-size: cover;
+            border-radius: 50px;
+            margin: 10px;
+            overflow: hidden;
+        }
+
+        .difficultyMedium {
+            animation: @(difficultyService.isMediumChecked == true ? "rotate-scale-down-ver" : "") 2s ease-in;
+            background-size: cover;
+            border-radius: 50px;
+            background-image: url('imgs/GradientBG.jpg');
+            margin: 10px;
+            overflow: hidden;
+        }
+
+        .difficultyHard {
+            animation: @(difficultyService.isHardChecked == true ? "rotate-scale-down-ver" : "") 2s ease-in;
+            border-radius: 50px;
+            background-image: url('imgs/hd_bg_trivia.jpg');
+            background-size: cover;
+            margin: 10px;
+            overflow: hidden;
+        }
+
+        #difficultyHeaderText{
+
+            font-family: 'Lucida Sans Typewriter';
+            font-size: 3em;
+            color: gold;
+
+        }
+
+        #difficultyText {
+        font-size: 4em;
+        word-wrap: break-word;
+        transition: all 1.1s ease-in-out;
+        margin-left: auto;
+        margin-right: auto;
+        position: relative;
+        top: 8%;
+        animation: @(difficultyService.WasDifficultySelected == true ? "tracking-out-expand-fwd-top" : "") 2s ease-in-out forwards;
+        transition:all 1s ease-in-out;
+        color: gold;
+
+
+
+    }
+
+            #difficultyText:hover {
+                opacity: 3;
+                color: seagreen;
+                transition: all 1s ease-in-out;
+            }
+
+       #difficultyContainer {
+        animation: @(difficultyService.WasDifficultySelected == true ? "slide-out-fwd-center" : "") 1s forwards ease-in-out;
+        transition: all 2s ease-in-out;
+        position: relative; 
+        top: 100px;
+    }
+
+       #hideCategoryMenu{
+
+           transition: all 2s ease-in-out;
+           height: 100%;
+           width: 100%;
+           display:@(difficultyService.WasDifficultySelected == true ? "" : "none");
+
+
+
+       }
+
+
+
+
+
+</style>
+
+
+
+@code {
+
+
+
+
+    protected override void OnInitialized()
+    {
+
+
+    }
+}
