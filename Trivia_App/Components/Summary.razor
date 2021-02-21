@@ -147,6 +147,9 @@
 
 <style>
 
+
+  
+
     #questionText {
         color: whitesmoke;
         font-family: 'Agency FB';
@@ -204,21 +207,14 @@
         navManager.NavigateTo("/", true);
     }
 
-   
 
-    void checkIfGameFinished()
-    {
 
-        if (scoringService.isGameOver == false)
-        {
-            navManager.NavigateTo("/", true);
-        }
-    }
+
 
     protected override void OnInitialized()
     {
 
-        if (scoringService.amountOfQuestionsCorrect < 1 &&  scoringService.amountOfQuestionsWrong < 1)
+        if (scoringService.amountOfQuestionsCorrect < 1 && scoringService.amountOfQuestionsWrong < 1)
         {
             navManager.NavigateTo("/", true);
         }

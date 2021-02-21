@@ -11,6 +11,8 @@ namespace Trivia_App.Services
         public string CurrentUserEmail { get; set; }
         public bool isUserGuest { get; set; } = false;
 
+        public string IdentityUserID { get; set; }
+
 
 
     }

@@ -87,7 +87,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        gameSnapshots = await client.GetFromJsonAsync<List<GameSnapshot>>("https://localhost:44379/api/gamesnapshot");
+        gameSnapshots = await client.GetFromJsonAsync<List<GameSnapshot>>(" https://finaltriviamaniaapi.azure-api.net/v1/api/GameSnapshot");
 
 
     }

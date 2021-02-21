@@ -71,5 +71,10 @@ namespace BlazorApp63.Areas.Identity
                 return principalStamp == userStamp;
             }
         }
+
+
+
+
+
     }
 }

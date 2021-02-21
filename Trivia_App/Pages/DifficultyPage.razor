@@ -1,6 +1,6 @@
 ﻿@page "/difficulty"
 @inject Services.WelcomeService welcomeService
-
+@inject NavigationManager navManager
 
 <img id="bgImg" src="/imgs/GradientBG.jpg" />
 
@@ -8,3 +8,25 @@
     <Trivia_App.Components.Display_Difficulties />
 
 </div>
+
+
+
+@code {
+
+
+    void handleLocationChange(object sender,LocationChangedEventArgs args)
+    {
+        if (args.Location == "https://localhost:44310/")
+        {
+            navManager.NavigateTo("/", true);
+        }
+
+    }
+
+
+    protected override void OnInitialized()
+    {
+        navManager.LocationChanged += handleLocationChange;
+
+    }
+}

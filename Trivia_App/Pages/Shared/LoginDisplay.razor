@@ -26,7 +26,8 @@
         <div style="text-align: center; background-color: black; position: fixed; width: 100%; z-index: 100;  background-image: url(imgs/cce82af5d54bf21dd8a820df0e5d07f3.jpg)">
             <a href="Identity/Account/Manage">Hello, @context.User.Identity.Name!</a>
             <i @onclick="@( () => navManager.NavigateTo("/", true) )" id="goHomeIcon" class="fas fa-home nav-item" style="font-size:1.5em;"></i>
-            <i  @onclick="@( () => navManager.NavigateTo("/history", true) )" id="goHomeIcon" class="fa fa-list-alt nav-item" style="font-size:1.5em; display:@( isUserAdmin == true ? "" : "none")"></i>
+            <i @onclick="@( () => navManager.NavigateTo("/history", true) )" id="goHomeIcon" class="fa fa-list-alt nav-item" style="font-size:1.5em; display:@( isUserAdmin == true ? "" : "none")"></i>
+            <i @onclick="@( () => navManager.NavigateTo("/users", true) )" id="goHomeIcon" class="fas fa-user-circle nav-item" style="font-size:1.5em; display:@( isUserAdmin == true ? "" : "none")"></i>
 
             <form method="post" action="Identity/Account/LogOut" class="text-center" style="font-family: 'Microsoft Sans Serif'; color: white;">
                 <button type="submit" class="nav-link btn btn-link" style="margin-left: auto; margin-right: auto; position: relative; font-family:'Segoe Print'; color: white;">Log out</button>

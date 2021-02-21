@@ -1,0 +1,119 @@
+﻿@page "/edituser/{Id}"
+@using Data;
+@inject AppDbContext db
+@inject NavigationManager navManager
+
+
+
+<div class="container py-4 d-flex justify-content-center" style=" text-align: center; background-color: grey; color: whitesmoke; border: 2px solid black; pointer-events: @(turnOffPointerEvents == true ? "none" : "")" >
+    <EditForm Model="myIdentity" OnValidSubmit="@handleValidSubmit" >
+        <ValidationSummary/>
+        <DataAnnotationsValidator/>
+
+        <div class="row mb-4" >
+            <h1 class="display-1" style="text-align: center">@successMsg</h1>
+            <div>
+
+                <div class="col-12" style="position: relative; margin-left: auto; margin-right: auto;">
+
+                    <div class="col-form-label mb-4">
+                        <label>User ID: </label>
+                        <InputTextArea class="form-control" @bind-Value="@myIdentity.Id"></InputTextArea>
+
+                    </div>
+
+                    <div class="col-form-label mb-4">
+                        <label>Email: </label>
+                        <InputTextArea class="form-control" @bind-Value="@myIdentity.Email"></InputTextArea>
+
+
+                    </div>
+
+
+
+                    <div class="col-form-label mb-4">
+                        <label>Phone Number </label>
+                        <InputTextArea class="form-control" @bind-Value="@myIdentity.PhoneNumber"></InputTextArea>
+
+                    </div>
+
+
+                    <div class="col-form-label mb-4">
+                        <label>Access Fail Count</label>
+                        <InputNumber class="form-control" @bind-Value="@myIdentity.AccessFailedCount"></InputNumber>
+
+                    </div>
+
+
+
+
+
+
+
+
+                    <div class="col-form-label mb-4">
+
+                        <label>Email Confirmed ?</label>
+                        <InputCheckbox class="form-control" @bind-Value="@(myIdentity.EmailConfirmed)"></InputCheckbox>
+
+                    </div>
+
+                    <div class="col-form-label mb-4">
+
+                        <label>Lockout Enabled ?</label>
+                        <InputCheckbox class="form-control" @bind-Value="@(myIdentity.LockoutEnabled)"></InputCheckbox>
+                    </div>
+
+
+
+
+                </div>
+
+
+                <button class="btn btn-success" type="submit">Update User</button>
+                <button class="btn btn-info" @onclick ="@( () => navManager.NavigateTo("/users", true))" >Go Back</button>
+            </div>
+        </div>
+
+
+
+
+
+        
+    </EditForm>
+
+    
+</div>
+
+
+@code {
+
+
+    [Parameter]
+    public string Id { get; set; }
+
+    string successMsg;
+
+    public bool turnOffPointerEvents = false;
+
+    async void handleValidSubmit(EditContext context)
+    {
+        turnOffPointerEvents = true;
+        db.Update(myIdentity);
+        db.SaveChanges();
+        successMsg = "Record Updated Successfully!";
+        await Task.Delay(1000);
+        navManager.NavigateTo("/");
+
+    }
+
+    Microsoft.AspNetCore.Identity.IdentityUser myIdentity;
+
+    protected override void OnInitialized()
+    {
+        myIdentity = new Microsoft.AspNetCore.Identity.IdentityUser();
+        var x = db.Users.Where(p => p.Id == Id).FirstOrDefault();
+        myIdentity = x;
+
+    }
+}

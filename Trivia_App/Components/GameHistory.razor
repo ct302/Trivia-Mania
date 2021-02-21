@@ -28,6 +28,8 @@
          <h1 class="text-center display-1" style="border-bottom: 2px solid black ;">Master Game History</h1>
          <div class="col-12" style="text-align: center;">
 
+      <button  @onclick="@(() => navManager.NavigateTo("/", true))" class="btn-danger btn m-4" style="height: 50px; width: 100px;">Go Back</button>
+
              @if (gameSnapshots == null)
              {
                  <div style="position: relative; margin-left: auto; margin-right: auto; top:200px; height: 150px; width: 150px;">
@@ -39,28 +41,28 @@
              else
              {
 
-             @foreach (var item in gameSnapshots.OrderByDescending(p => p.DatePlayed).OrderByDescending(p => p.TimePlayed))
-             {
+                 @foreach (var item in gameSnapshots.OrderByDescending(p => p.DatePlayed).OrderByDescending(p => p.TimePlayed))
+                 {
 
 
 
-                 <div class="col-12" style="text-align: center; border-bottom:2px solid black;">
+                     <div class="col-12" style="text-align: center; border-bottom:2px solid black;">
 
-                     <p>Game ID: @item.GameID</p>
-                     <p>User ID: @item.UserID</p>
-                     <p>Category: @item.GameCategory</p>
-                     <p>Difficulty: @item.GameDifficulty</p>
-                     <p>Score Percentage: @item.GameScorePercentage%</p>
-                     <p>Game Length: @item.GameLength</p>
-                     <p>Date Played: @item.DatePlayed</p>
-                     <p>Time Played: @item.TimePlayed</p>
-                     <p>Correct Answers: @item.CorrectAnswers</p>
-                     <p>Wrong Answers: @item.IncorrectAnswers</p>
+                         <p>Game ID: @item.GameID</p>
+                         <p>User ID: @item.UserID</p>
+                         <p>Category: @item.GameCategory</p>
+                         <p>Difficulty: @item.GameDifficulty</p>
+                         <p>Score Percentage: @item.GameScorePercentage%</p>
+                         <p>Game Length: @item.GameLength</p>
+                         <p>Date Played: @item.DatePlayed</p>
+                         <p>Time Played: @item.TimePlayed</p>
+                         <p>Correct Answers: @item.CorrectAnswers</p>
+                         <p>Wrong Answers: @item.IncorrectAnswers</p>
 
-                     <button @onclick="@(() => deleteGame(item.UserID))"  class="btn-danger btn" style="height: 100px; width: 100px;">Delete Game</button>
+                         <button @onclick="@(() => deleteGame(item.UserID))" class="btn-danger btn" style="height: 100px; width: 100px;">Delete Game</button>
 
-                 </div>
-             }
+                     </div>
+                 }
              }
 
          </div>
@@ -97,7 +99,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        gameSnapshots = await client.GetFromJsonAsync<List<GameSnapshot>>("https://localhost:44379/api/gamesnapshot");
+        gameSnapshots = await client.GetFromJsonAsync<List<GameSnapshot>>("https://finaltriviamaniaapi.azure-api.net/v1/api/GameSnapshot");
 
 
     }
@@ -106,7 +108,10 @@
 
     async Task deleteGame(string UserID)
     {
-        await client.DeleteAsync($"https://localhost:44379/api/gamesnapshot/{UserID}");
+
+      
+
+        await client.DeleteAsync($"https://finaltriviamaniaapi.azure-api.net/v1/api/GameSnapshot/{UserID}");
         await InvokeAsync(StateHasChanged);
         deletionMsg = "Deleted!";
         navManager.NavigateTo("/history", true);

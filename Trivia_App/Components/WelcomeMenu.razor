@@ -28,26 +28,43 @@
     <Authorized>
 
 
-        <div style=" display:@(welcomeService.wasMenuClicked == true ? "none" : "");  text-align: center;" class="container" id="welcomeContainer" @onclick="@( () => welcomeService.wasMenuClicked = true)">
+        <div style=" background-image: url(imgs/HD_BG_Trivia.jpg); background-repeat: no-repeat; background-size: cover; display:@(welcomeService.wasMenuClicked == true ? "none" : "");  text-align: center;" class="container" id="welcomeContainer" @onclick="@( () => welcomeService.wasMenuClicked = true)">
 
-            <h1 style="color:gold;">
+
+
+            <h1 class="welcomeToAnimation"  id ="welcomeToText"style="color:gold; line-height: 60px; font-family: 'Kristen ITC'">
                 Welcome
                 <span style="display: block; position:relative; top: 50px;">To</span>
             </h1>
-            <h4 id="headingText" class="display-2" style="font-family: WRESTLEMANIA; color: cadetblue;">Trivia Mania</h4>
+            <h4 id="headingText" class="display-2 welcomeToAnimation" style="font-family: WRESTLEMANIA; color: cadetblue; position: relative; bottom: 25px;">Trivia Mania</h4>
+            <h4 class="welcomeToAnimation" id="headingText"  style="font-family: Calibri; color: white; position: relative; bottom: 25px; animation: bounce-top 5s ease-in-out forwards;">Click to Start</h4>
         </div>
-        
+
 
         <span id="hiddenDifficultyMenu" style="display:@(welcomeService.wasMenuClicked == true ? "" : "none")">
             <Trivia_App.Components.Display_Difficulties />
 
         </span>
 
-        <div style="text-align: center; background-color: black; height:100px; margin-top: 125px; display:@(welcomeService.wasMenuClicked == true ? "none" : "");
-            background-image: url(imgs/cce82af5d54bf21dd8a820df0e5d07f3.jpg)" >
+        <div style="text-align: center;  background-color: black; height:100px; margin-top: 125px; display:@(welcomeService.wasMenuClicked == true ? "none" : "");
+            background-image: url(imgs/cce82af5d54bf21dd8a820df0e5d07f3.jpg)">
             <button style="position: relative; color:gold; font-family: WRESTLEMANIA; width: 250px; top: 25px; font-size: 1.5em; " class="btn btn-success" @onclick="@(gotoUserHistory)">View Game History</button>
 
         </div>
+
+
+        <div class="d-flex justify-content-center" style="display:@(welcomeService.wasMenuClicked == true ? "none" : "")">
+            <div id="designDiv" class="m-2 col-6" style="text-align: center; height:50px; display: @(welcomeService.wasMenuClicked == true ? "none" : "")" >
+                <p class="align-text-bottom" style="color: white; font-family:'Agency FB'">
+                    Designed by <span style="display:@(welcomeService.wasMenuClicked == true ? "none" : "")">
+                        <a href="https://github.com/headshotsct">Charley Turner</a>
+                    </span>
+                </p>
+
+            </div>
+
+        </div>
+
 
 
     </Authorized>
@@ -62,9 +79,11 @@
 
 
 
+
+
         <div class=" py-4" style=" color:goldenrod; text-align:  center; position: relative; top: 200px; font-family: WRESTLEMANIA;">
 
-            <h4  id="headingText" class="display-2" style="font-family: WRESTLEMANIA; color: cadetblue; font-size: 8em; bottom: 200px; position: relative;">Trivia Mania</h4>
+            <h4 id="headingText" class="display-2" style="font-family: WRESTLEMANIA; color: cadetblue; font-size: 8em; bottom: 200px; position: relative;">Trivia Mania</h4>
 
 
 
@@ -81,6 +100,9 @@
             </div>
 
         </div>
+
+
+        
 
 
     </NotAuthorized>
@@ -131,6 +153,199 @@
 <style>
 
 
+    .welcomeToAnimation{
+        animation: tilt-in-top-1 2s ease-in-out forwards;
+
+
+    }
+
+    @@-webkit-keyframes tilt-in-top-1 {
+  0% {
+    -webkit-transform: rotateY(30deg) translateY(-300px) skewY(-30deg);
+            transform: rotateY(30deg) translateY(-300px) skewY(-30deg);
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: rotateY(0deg) translateY(0) skewY(0deg);
+            transform: rotateY(0deg) translateY(0) skewY(0deg);
+    opacity: 1;
+  }
+}
+@@keyframes tilt-in-top-1 {
+  0% {
+    -webkit-transform: rotateY(30deg) translateY(-300px) skewY(-30deg);
+            transform: rotateY(30deg) translateY(-300px) skewY(-30deg);
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: rotateY(0deg) translateY(0) skewY(0deg);
+            transform: rotateY(0deg) translateY(0) skewY(0deg);
+    opacity: 1;
+  }
+}
+
+
+    @@-webkit-keyframes shadow-pop-br {
+  0% {
+    -webkit-box-shadow: 0 0 #3e3e3e, 0 0 #3e3e3e, 0 0 #3e3e3e, 0 0 #3e3e3e, 0 0 #3e3e3e, 0 0 #3e3e3e, 0 0 #3e3e3e, 0 0 #3e3e3e;
+            box-shadow: 0 0 #3e3e3e, 0 0 #3e3e3e, 0 0 #3e3e3e, 0 0 #3e3e3e, 0 0 #3e3e3e, 0 0 #3e3e3e, 0 0 #3e3e3e, 0 0 #3e3e3e;
+    -webkit-transform: translateX(0) translateY(0);
+            transform: translateX(0) translateY(0);
+  }
+  100% {
+    -webkit-box-shadow: 1px 1px #3e3e3e, 2px 2px #3e3e3e, 3px 3px #3e3e3e, 4px 4px #3e3e3e, 5px 5px #3e3e3e, 6px 6px #3e3e3e, 7px 7px #3e3e3e, 8px 8px #3e3e3e;
+            box-shadow: 1px 1px #3e3e3e, 2px 2px #3e3e3e, 3px 3px #3e3e3e, 4px 4px #3e3e3e, 5px 5px #3e3e3e, 6px 6px #3e3e3e, 7px 7px #3e3e3e, 8px 8px #3e3e3e;
+    -webkit-transform: translateX(-8px) translateY(-8px);
+            transform: translateX(-8px) translateY(-8px);
+  }
+}
+@@keyframes shadow-pop-br {
+  0% {
+    -webkit-box-shadow: 0 0 #3e3e3e, 0 0 #3e3e3e, 0 0 #3e3e3e, 0 0 #3e3e3e, 0 0 #3e3e3e, 0 0 #3e3e3e, 0 0 #3e3e3e, 0 0 #3e3e3e;
+            box-shadow: 0 0 #3e3e3e, 0 0 #3e3e3e, 0 0 #3e3e3e, 0 0 #3e3e3e, 0 0 #3e3e3e, 0 0 #3e3e3e, 0 0 #3e3e3e, 0 0 #3e3e3e;
+    -webkit-transform: translateX(0) translateY(0);
+            transform: translateX(0) translateY(0);
+  }
+  100% {
+    -webkit-box-shadow: 1px 1px #3e3e3e, 2px 2px #3e3e3e, 3px 3px #3e3e3e, 4px 4px #3e3e3e, 5px 5px #3e3e3e, 6px 6px #3e3e3e, 7px 7px #3e3e3e, 8px 8px #3e3e3e;
+            box-shadow: 1px 1px #3e3e3e, 2px 2px #3e3e3e, 3px 3px #3e3e3e, 4px 4px #3e3e3e, 5px 5px #3e3e3e, 6px 6px #3e3e3e, 7px 7px #3e3e3e, 8px 8px #3e3e3e;
+    -webkit-transform: translateX(-8px) translateY(-8px);
+            transform: translateX(-8px) translateY(-8px);
+  }
+}
+
+
+
+
+@@-webkit-keyframes bounce-top {
+  0% {
+    -webkit-transform: translateY(-45px);
+            transform: translateY(-45px);
+    -webkit-animation-timing-function: ease-in;
+            animation-timing-function: ease-in;
+    opacity: 1;
+  }
+  24% {
+    opacity: 1;
+  }
+  40% {
+    -webkit-transform: translateY(-24px);
+            transform: translateY(-24px);
+    -webkit-animation-timing-function: ease-in;
+            animation-timing-function: ease-in;
+  }
+  65% {
+    -webkit-transform: translateY(-12px);
+            transform: translateY(-12px);
+    -webkit-animation-timing-function: ease-in;
+            animation-timing-function: ease-in;
+  }
+  82% {
+    -webkit-transform: translateY(-6px);
+            transform: translateY(-6px);
+    -webkit-animation-timing-function: ease-in;
+            animation-timing-function: ease-in;
+  }
+  93% {
+    -webkit-transform: translateY(-4px);
+            transform: translateY(-4px);
+    -webkit-animation-timing-function: ease-in;
+            animation-timing-function: ease-in;
+  }
+  25%,
+  55%,
+  75%,
+  87% {
+    -webkit-transform: translateY(0px);
+            transform: translateY(0px);
+    -webkit-animation-timing-function: ease-out;
+            animation-timing-function: ease-out;
+  }
+  100% {
+    -webkit-transform: translateY(0px);
+            transform: translateY(0px);
+    -webkit-animation-timing-function: ease-out;
+            animation-timing-function: ease-out;
+    opacity: 1;
+  }
+}
+@@keyframes bounce-top {
+  0% {
+    -webkit-transform: translateY(-45px);
+            transform: translateY(-45px);
+    -webkit-animation-timing-function: ease-in;
+            animation-timing-function: ease-in;
+    opacity: 1;
+  }
+  24% {
+    opacity: 1;
+  }
+  40% {
+    -webkit-transform: translateY(-24px);
+            transform: translateY(-24px);
+    -webkit-animation-timing-function: ease-in;
+            animation-timing-function: ease-in;
+  }
+  65% {
+    -webkit-transform: translateY(-12px);
+            transform: translateY(-12px);
+    -webkit-animation-timing-function: ease-in;
+            animation-timing-function: ease-in;
+  }
+  82% {
+    -webkit-transform: translateY(-6px);
+            transform: translateY(-6px);
+    -webkit-animation-timing-function: ease-in;
+            animation-timing-function: ease-in;
+  }
+  93% {
+    -webkit-transform: translateY(-4px);
+            transform: translateY(-4px);
+    -webkit-animation-timing-function: ease-in;
+            animation-timing-function: ease-in;
+  }
+  25%,
+  55%,
+  75%,
+  87% {
+    -webkit-transform: translateY(0px);
+            transform: translateY(0px);
+    -webkit-animation-timing-function: ease-out;
+            animation-timing-function: ease-out;
+  }
+  100% {
+    -webkit-transform: translateY(0px);
+            transform: translateY(0px);
+    -webkit-animation-timing-function: ease-out;
+            animation-timing-function: ease-out;
+    opacity: 1;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+    .videoInsert{
+
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        min-width: 100%;
+        min-height: 100%;width: auto;
+        height: auto;
+        z-index: -100;
+        background-size: cover;
+        overflow: hidden;
+        transition: all 1s ease-in-out;
+    }
+
     #headingText::first-letter {
         font-size: 2em;
     }
@@ -151,6 +366,13 @@
         min-width: 100%;
         clip-path: circle(50% at 50% 50%);
         text-shadow: 2px 2px 4px #000000;
+
+    }
+
+    #welcomeContainer:hover{
+        animation: shadow-pop-br 1s ease-in-out forwards;
+        transition: all 1s ease-in-out;
+
     }
 
     #hiddenDifficultyMenu {
@@ -158,5 +380,28 @@
     }
 
 
+
+    @@keyframes changeDivColor
+    {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+     }
+
+
+
+
+
+    #designDiv {
+        animation: changeDivColor infinite ease-in-out 10s forwards;
+        transition: all 1s ease-in-out;
+        background: linear-gradient(344deg, #1b1908, #c1b340);
+        background-size: 400% 400%;
+        border: dotted white 2px ;
+        text-overflow: ellipsis;
+        overflow: hidden;
+
+
+    }
 
 </style>

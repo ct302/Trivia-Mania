@@ -1,0 +1,139 @@
+﻿@page "/users"
+@using Trivia_App.Data;
+@inject AppDbContext db
+@inject NavigationManager navManager
+
+
+
+<AuthorizeView Roles="Admin">
+
+
+
+
+
+
+    <NotAuthorized>
+
+        <h1 class="display-1 text-center" style="color:red;">@statusMsg</h1>
+
+    </NotAuthorized>
+
+    <Authorized>
+
+
+
+
+
+<div class="table-responsive" style="background: rgb(2,0,36); background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(143,146,56,1) 100%, rgba(255,0,0,1) 100%);">
+    <button style="width: 100%; height:50px;" class="btn-success" @onclick ="@( () => navManager.NavigateTo("/", true))">Go Back</button>
+    <table class="table">
+        <thead>
+            <tr>
+                <th class="myTh" scope="col">ID</th>
+                <th class="myTh" scope="col">Email</th>
+                <th class="myTh" scope="col">Edit</th>
+                <th class="myTh" scope="col">Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+
+
+            @foreach (var item in db.Users)
+            {
+            <tr>
+
+
+                <th id="questionText" scope="row"> @item.Id</th>
+
+                <td>  @item.Email</td>
+
+                <td>
+
+                    <button @onclick="@( () => goToEditUsers(item.Id) )" class="btn btn-success">Edit</button>
+                </td>
+                    
+                <td>
+
+                    <button @onclick="@( () => removeUsers(item.Id) )" class="btn btn-danger">Delete</button>
+                </td>
+
+
+            </tr>
+
+
+
+
+
+            }
+
+
+
+        </tbody>
+
+
+    </table>
+
+
+
+
+
+
+  
+
+
+</div>
+
+
+    </Authorized>
+
+
+
+
+</AuthorizeView>
+
+
+
+<style>
+
+    th {
+
+        color: white;
+    }
+
+    td {
+
+        color: white;
+        font-family: Calibri;
+
+    }
+
+</style>
+
+
+
+@code {
+
+    string statusMsg = "Admin Access Only!!!";
+
+    void removeUsers(string Id)
+    {
+
+        var x = db.Users.Where(p => p.Id == Id).FirstOrDefault();
+        db.Users.Remove(x);
+        db.SaveChanges();
+        InvokeAsync(StateHasChanged);
+
+    }
+
+    string Id;
+
+    void goToEditUsers(string Id)
+    {
+        navManager.NavigateTo($"/edituser/{Id}");
+
+    }
+
+
+
+}
+

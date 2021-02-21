@@ -35,7 +35,7 @@
         timeoutQuestion = item.Question;
 
         <div>
-            <h1 class="text-center display-1" id="timesUpText">@displayTimeOver</h1>
+            <h1 style="color: white; font-family: 'Juice ITC'" class="text-center display-1" id="timesUpText">@displayTimeOver</h1>
             <h1 id="timesUpText" style="color: pink;" class="display-1 text-center text-success text-blur-out">Correct answer:  @WebUtility.HtmlDecode($"{formattedCorrectAnswer}")</h1>
 
 
@@ -53,16 +53,16 @@
 
 
             <h1 style="font-family:CursedTimerUlil-Aznm; background-color: black; border: 3px solid white; color:white; font-size: 4em;" class="text-center clock; time">Time: @timerDisplay</h1>
-            <p class="border-bottom-0 display-1 text-center" style="color: ghostwhite; pointer-events: none; position: relative; font-size: 2em;  display:@(disableClickEvents == true ? "none" : "") ">
+            <p class="border-bottom-0 display-1 text-center" id="questionText" style="color: ghostwhite; pointer-events: none;  position: relative; font-size: 2em;  display:@(disableClickEvents == true ? "none" : "") ">
                 Question @questionIndexNumber   @WebUtility.HtmlDecode($"{item.Question}")
             </p>
 
             <div style="pointer-events:@(lifelineService.wasLifelineUsed == true ? "none" : ""); display:@(disableClickEvents == true ? "none" : "")">
 
-                <p style="display:@(lifelineService.wasLifelineUsed == true ? "none" : "") " id="answerText" @onclick="@(() => checkAnswer(item.Answer1, item.CorrectAnswer, item.Question) )">A. @WebUtility.HtmlDecode($"{item.Answer1}")</p>
-                <p style="display:@(lifelineService.wasLifelineUsed == true ? "none" : "") " id="answerText" @onclick="@(() => checkAnswer(item.Answer2, item.CorrectAnswer, item.Question) )">B. @WebUtility.HtmlDecode($"{item.Answer2}")</p>
-                <p style="display:@(lifelineService.wasLifelineUsed == true ? "none" : "") " id="answerText" @onclick="@(() => checkAnswer(item.Answer3, item.CorrectAnswer, item.Question) )">C. @WebUtility.HtmlDecode($"{item.Answer3}")</p>
-                <p style="display:@(lifelineService.wasLifelineUsed == true ? "none" : "") " id="answerText" @onclick="@(() => checkAnswer(item.Answer4, item.CorrectAnswer, item.Question) )">D. @WebUtility.HtmlDecode($"{item.Answer4}")</p>
+                <p style="display:@(lifelineService.wasLifelineUsed == true ? "none" : "") " class="cell" id="answerText1" @onclick="@(() => checkAnswer(item.Answer1, item.CorrectAnswer, item.Question) )">A. @WebUtility.HtmlDecode($"{item.Answer1}")</p>
+                <p style="display:@(lifelineService.wasLifelineUsed == true ? "none" : "") " class="cell" id="answerText2" @onclick="@(() => checkAnswer(item.Answer2, item.CorrectAnswer, item.Question) )">B. @WebUtility.HtmlDecode($"{item.Answer2}")</p>
+                <p style="display:@(lifelineService.wasLifelineUsed == true ? "none" : "") " class="cell" id="answerText3" @onclick="@(() => checkAnswer(item.Answer3, item.CorrectAnswer, item.Question) )">C. @WebUtility.HtmlDecode($"{item.Answer3}")</p>
+                <p style="display:@(lifelineService.wasLifelineUsed == true ? "none" : "") " class="cell" id="answerText4" @onclick="@(() => checkAnswer(item.Answer4, item.CorrectAnswer, item.Question) )">D. @WebUtility.HtmlDecode($"{item.Answer4}")</p>
 
 
 
@@ -70,7 +70,7 @@
 
 
 
-            <p style="display:@(lifelineService.wasLifelineUsed == true ? "" : "none") " id="answerText" @onclick="@(() => checkAnswer(item.CorrectAnswer, item.CorrectAnswer, item.Question) )">A. @WebUtility.HtmlDecode($"{item.CorrectAnswer}")</p>
+            <p style="display:@(lifelineService.wasLifelineUsed == true ? "" : "none") " id="answerText1" @onclick="@(() => checkAnswer(item.CorrectAnswer, item.CorrectAnswer, item.Question) )">A. @WebUtility.HtmlDecode($"{item.CorrectAnswer}")</p>
             @if (item.Answer2 == item.CorrectAnswer)
             {
                 lifeLineAnswer = item.Answer3;
@@ -85,7 +85,7 @@
 
 
 
-            <p style="display:@(lifelineService.wasLifelineUsed == true ? "" : "none") " id="answerText" @onclick="@(() => checkAnswer(lifeLineAnswer, item.CorrectAnswer, item.Question) )">B. @WebUtility.HtmlDecode($"{lifeLineAnswer}")</p>
+            <p style="display:@(lifelineService.wasLifelineUsed == true ? "" : "none") " id="answerText2" @onclick="@(() => checkAnswer(lifeLineAnswer, item.CorrectAnswer, item.Question) )">B. @WebUtility.HtmlDecode($"{lifeLineAnswer}")</p>
 
 
 
@@ -105,14 +105,14 @@
 
             <div style="text-align: center; display:@(dontDisplayLifeline == true ? "none" : "")">
 
-                <button @onclick="@( () => useLifeline(item.CorrectAnswer) )" style=" border-radius: 0px; height: 100px; width: 300px; font-family: 'Bell MT'; font-size: 3em; background-color: darkblue; text-align:center;" class="btn btn-success">
+                <button @onclick="@( () => useLifeline(item.CorrectAnswer) )"  id ="lifelineButton" style=" border-radius: 0px; height: 100px; width: 300px; font-family: 'Bell MT'; font-size: 3em; background-color: darkblue; text-align:center;" class="btn btn-success">
                     Use 50/50
 
 
                 </button>
 
             </div>
-            <div>
+            <div style="background-color: black; border: 2px solid white; position: relative; top: 30px;">
 
                 <h1 style="font-size: 2em; color:green;" class="text-center text-success">Answers Correct:  @questionsAnsweredCorrectly </h1>
                 <h1 style="font-size: 2em; color:green;" class="text-center text-danger">Answers Incorrect: @questionsAnsweredInCorrectly </h1>
@@ -135,7 +135,7 @@
 <div class="py-4" id="goHomeDiv" style="display:@(questionIndexNumber > gameLengthService.chosenGameLength ? "" : "none"); text-align: center;">
     <h1 class="text-center" style=" position: relative; font-size: 3em; margin-left: auto; margin-right: auto; z-index: 100;">@gameStatus</h1>
     <h1 class="text-center" style="position: relative; font-size: 3em; margin-left: auto; margin-right: auto; z-index: 100;">@scoreDisplay</h1>
-    <button class="btn-success mb-5" style="height:80px; width:300px;" @onclick="@(goHome)">Go To Summary</button>
+    <button class="btn-success mb-5 @(myCSSString)" style="height:80px; width:300px;" @onclick="@(goHome)">Go To Summary</button>
 </div>
 
 
@@ -145,14 +145,19 @@
 
 
 
+@code {
 
+
+    string myCSSString;
+
+}
 
 
 
 
 <style>
 
-
+    
     #goHomeDiv{
 
         color: white;
@@ -270,6 +275,14 @@
     }
 
 
+    .cell:hover {
+      
+        color: silver;
+        transition: all 0.5s ease-in;
+        background-color: seagreen;
+    }
+
+    
 
 
     @@keyframes text-blur-out {
@@ -308,20 +321,79 @@
 
     }
 
-    #answerText {
+
+
+    @@-webkit-keyframes text-focus-in {
+  0% {
+    -webkit-filter: blur(12px);
+            filter: blur(12px);
+    opacity: 0;
+  }
+  100% {
+    -webkit-filter: blur(0px);
+            filter: blur(0px);
+    opacity: 1;
+  }
+}
+@@keyframes text-focus-in {
+  0% {
+    -webkit-filter: blur(12px);
+            filter: blur(12px);
+    opacity: 0;
+  }
+  100% {
+    -webkit-filter: blur(0px);
+            filter: blur(0px);
+    opacity: 1;
+  }
+}
+
+
+
+
+    #answerText1 {
         position: relative;
         left: 20px;
         color: whitesmoke;
         font-family: monospace;
         font-size: 2em;
+        animation: 0.1s ease-in-out tilt-in-fwd-tr;
+        transition: all 1s ease-in-out;
+    }
+
+    #answerText2 {
+        position: relative;
+        left: 20px;
+        color: whitesmoke;
+        font-family: monospace;
+        font-size: 2em;
+        animation: 0.5s ease-in-out tilt-in-fwd-tr;
+        transition: all 1s ease-in-out;
+    }
+
+    #answerText3 {
+        position: relative;
+        left: 20px;
+        color: whitesmoke;
+        font-family: monospace;
+        font-size: 2em;
+        animation: 1s ease-in-out tilt-in-fwd-tr;
+        transition: all 0.8s ease-in-out;
+    }
+
+    #answerText4 {
+        position: relative;
+        left: 20px;
+        color: whitesmoke;
+        font-family: monospace;
+        font-size: 2em;
+        animation: 1.5s ease-in-out tilt-in-fwd-tr;
+        transition: all 1s ease-in-out;
     }
 
 
-        #answerText:hover {
-            color: silver;
-            transition: all 0.5s ease-in;
-            background-color: seagreen;
-        }
+
+
 
     #questionText {
         left: 20px;
@@ -330,6 +402,8 @@
         font-family: 'Berlin Sans FB';
         color: white;
         font-size: 3em;
+        animation: text-focus-in 0.5s ease-in-out forwards;
+   
     }
 </style>
 
@@ -487,6 +561,7 @@
 
     void goHome()
     {
+        myCSSString = "spinner-grow";
         summaryService.mySummaryList.Add(summaryService.mySummary);
         navManager.NavigateTo("/summary");
 
@@ -499,9 +574,14 @@
 
     async void useLifeline(string currentCorrectAnswer)
     {
+
         dontDisplayLifeline = true;
 
         lifelineService.wasLifelineUsed = true;
+
+
+
+
 
         lifelineStatusMsg = "50/50 Used"!;
 
@@ -646,6 +726,13 @@
         timeElasped = e.SignalTime.Second.ToString();
         InvokeAsync(this.StateHasChanged);
 
+        if (isGameOver == true)
+        {
+            t.Stop();
+            t.Dispose();
+
+        }
+
 
     }
 
@@ -748,10 +835,10 @@
 
         switch (args.Location)
         {
-            case "https://localhost:44310/summary":
+            case "https://cttriviamaniaclient.azurewebsites.net/summary":
                 break;
 
-            case "https://localhost:44310/error":
+            case "https://cttriviamaniaclient.azurewebsites.net/error":
                 break;
 
             default:

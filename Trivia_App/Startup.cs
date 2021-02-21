@@ -38,8 +38,8 @@ namespace Trivia_App
 
             services.AddDbContext<AppDbContext>(options =>
              options.UseSqlServer(
-             Configuration.GetConnectionString("DefaultConnection")));
-             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddRoles<IdentityRole>()
+             Configuration.GetConnectionString("AzureDB")));
+             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false).AddRoles<IdentityRole>()
             
            .AddEntityFrameworkStores<AppDbContext>();
 
