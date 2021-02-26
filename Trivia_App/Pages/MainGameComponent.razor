@@ -51,9 +51,8 @@
                                      class="display-1 text-center">@lifelineStatusMsg</h1>
 
 
-
-            <h1 style="font-family:CursedTimerUlil-Aznm; background-color: black; border: 3px solid white; color:white; font-size: 4em;" class="text-center clock; time">Time: @timerDisplay</h1>
-            <p class="border-bottom-0 display-1 text-center" id="questionText" style="color: ghostwhite; pointer-events: none;  position: relative; font-size: 2em;  display:@(disableClickEvents == true ? "none" : "") ">
+            <h1 style="font-family:CursedTimerUlil-Aznm; margin-left: auto; margin-right: auto; background-color: black; position:relative; margin-left: auto; margin-right: auto; border: 3px solid white; color:white; font-size: 4em;" class="text-center clock; time">Time: @timerDisplay</h1>
+            <p class="border-bottom-0 display-1 text-center" id="questionText" style="color: ghostwhite; pointer-events: none;  position: relative; font-size: 2em;  display:@(disableClickEvents == true ? "none" : ""); margin-left: auto; margin-right: auto; ">
                 Question @questionIndexNumber   @WebUtility.HtmlDecode($"{item.Question}")
             </p>
 
@@ -105,14 +104,14 @@
 
             <div style="text-align: center; display:@(dontDisplayLifeline == true ? "none" : "")">
 
-                <button @onclick="@( () => useLifeline(item.CorrectAnswer) )"  id ="lifelineButton" style=" border-radius: 0px; height: 100px; width: 300px; font-family: 'Bell MT'; font-size: 3em; background-color: darkblue; text-align:center;" class="btn btn-success">
+                <button @onclick="@( () => useLifeline(item.CorrectAnswer) )"  id ="lifelineButton" style=" border-radius: 0px; height: 50px; width: 50vw; font-family: 'Bell MT'; font-size: 1.5em; background-color: darkblue; text-align:center;" class="btn btn-success">
                     Use 50/50
 
 
                 </button>
 
             </div>
-            <div style="background-color: black; border: 2px solid white; position: relative; top: 30px;">
+            <div style="background-color: black; border: 2px solid white; position: relative; top: 30px; margin-bottom: 150px;">
 
                 <h1 style="font-size: 2em; color:green;" class="text-center text-success">Answers Correct:  @questionsAnsweredCorrectly </h1>
                 <h1 style="font-size: 2em; color:green;" class="text-center text-danger">Answers Incorrect: @questionsAnsweredInCorrectly </h1>
@@ -317,6 +316,7 @@
 
         animation: text-pop-up-top ease-in-out infinite;
         animation-duration:@(wasAnswerInCorrect == true ? "4s" : "6s");
+        font-size: 1.5em;
 
 
     }

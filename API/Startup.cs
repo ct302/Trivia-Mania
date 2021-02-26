@@ -30,7 +30,6 @@ namespace API
         {
             services.AddControllers();
             services.AddScoped<IGenericService<GameSnapshot>, Services.GameSnapshotService>();
-            services.AddSwaggerGen();
             services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(
             Configuration.GetConnectionString("DefaultConnection")));
@@ -43,7 +42,6 @@ namespace API
             {
                 app.UseDeveloperExceptionPage();
             }
-            app.UseSwagger();
 
             app.UseHttpsRedirection();
 

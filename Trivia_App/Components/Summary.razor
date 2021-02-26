@@ -214,10 +214,10 @@
     protected override void OnInitialized()
     {
 
-        if (scoringService.amountOfQuestionsCorrect < 1 && scoringService.amountOfQuestionsWrong < 1)
-        {
-            navManager.NavigateTo("/", true);
-        }
+        //if (scoringService.amountOfQuestionsCorrect < 1 && scoringService.amountOfQuestionsWrong < 1)
+        //{
+        //    navManager.NavigateTo("/", true);
+        //}
 
         myGameSnapshot = new GameSnapshot();
 
@@ -230,7 +230,7 @@
             myGameSnapshot.GameCategory = categoryService.chosenCategory.Replace("Entertainment:", "");
             myGameSnapshot.GameLength = gameLengthService.finalChosenGameLength;
             myGameSnapshot.DatePlayed = DateTime.Now.ToShortDateString();
-            myGameSnapshot.TimePlayed = DateTime.Now.ToShortTimeString();
+            myGameSnapshot.TimePlayed = DateTime.UtcNow.ToShortTimeString();
             myGameSnapshot.IncorrectAnswers = scoringService.amountOfQuestionsWrong.ToString().Replace("-", "");
             myGameSnapshot.CorrectAnswers = scoringService.amountOfQuestionsCorrect.ToString();
             myGameSnapshot.GameScorePercentage = finalScorePercentage;

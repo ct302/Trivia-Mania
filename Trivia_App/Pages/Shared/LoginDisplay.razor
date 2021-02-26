@@ -23,15 +23,24 @@
         }
          
 
-        <div style="text-align: center; background-color: black; position: fixed; width: 100%; z-index: 100;  background-image: url(imgs/cce82af5d54bf21dd8a820df0e5d07f3.jpg)">
+        <div style="text-align: center; background-color: black; position: fixed; width: 100%; z-index: 100; background-image: url(imgs/cce82af5d54bf21dd8a820df0e5d07f3.jpg)">
+            <div style="max-height:10vh; text-overflow:ellipsis; ">
             <a href="Identity/Account/Manage">Hello, @context.User.Identity.Name!</a>
             <i @onclick="@( () => navManager.NavigateTo("/", true) )" id="goHomeIcon" class="fas fa-home nav-item" style="font-size:1.5em;"></i>
             <i @onclick="@( () => navManager.NavigateTo("/history", true) )" id="goHomeIcon" class="fa fa-list-alt nav-item" style="font-size:1.5em; display:@( isUserAdmin == true ? "" : "none")"></i>
             <i @onclick="@( () => navManager.NavigateTo("/users", true) )" id="goHomeIcon" class="fas fa-user-circle nav-item" style="font-size:1.5em; display:@( isUserAdmin == true ? "" : "none")"></i>
 
-            <form method="post" action="Identity/Account/LogOut" class="text-center" style="font-family: 'Microsoft Sans Serif'; color: white;">
-                <button type="submit" class="nav-link btn btn-link" style="margin-left: auto; margin-right: auto; position: relative; font-family:'Segoe Print'; color: white;">Log out</button>
+
+            </div>
+
+            <div class="d-flex justify-content-end">
+            <form method="post" action="Identity/Account/LogOut" class="text-center nav-item" style="font-family: 'Microsoft Sans Serif'; color: white;">
+                <button id="logOutButton" type="submit" class="nav-link btn btn-link" 
+                style="margin-left: auto; margin-right: auto; position: relative; font-family:'Segoe Print'; 
+                 color: white;">Log out</button>
             </form>
+
+            </div>
 
 
         </div>
@@ -41,11 +50,14 @@
     <NotAuthorized>
         <div class="fixed-top" style="background-color: black; color:white; font-size:2em; font-family: WRESTLEMANIA; text-align:center;">
 
+            <div style="overflow:hidden; max-height:15vh;">
             <a href="Identity/Account/Login">Log in</a>
             <span style="opacity:0;">|</span>
             <a href="Identity/Account/Register">Register</a>
             <span style="opacity:0;">|</span>
             <a id="guestText" style="color: gold;" @onclick="@(handleGuestPlay)">Play as Guest</a>
+
+            </div>
 
 
         </div>
@@ -68,6 +80,15 @@
 
 <style>
 
+    #logOutButton{
+        color: white;
+    }
+
+    #logOutButton:hover{
+        
+        color: seagreen;
+        transition: all 1s ease-in-out;
+    }
 
     #goHomeIcon{
         color: gold;
@@ -92,7 +113,7 @@
     a {
         color: gold;
         font-family: WRESTLEMANIA;
-        font-size: 2em;
+        font-size: 6vw;
     }
 </style>
 

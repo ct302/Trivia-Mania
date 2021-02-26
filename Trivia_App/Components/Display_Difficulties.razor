@@ -10,7 +10,7 @@
 
 <div class="container @(difficultyService.WasDifficultySelected == true ? "inivisibleAnimation" : "")" id="difficultyContainer" style="text-overflow: ellipsis; overflow: hidden; overflow-wrap: break-word; display: @(difficultyService.WasDifficultySelected == true? "none" : ""); ">
 
-    <h4 style="background-color: black; color: white; font-family: sans-serif;" class="text-center" id="difficultyHeaderText">Please select a Difficulty</h4>
+    <h1 style="background-color: black; color: white; font-family: sans-serif;" class="text-center" id="difficultyHeaderText">Please select a Difficulty</h1>
 
     <div class="col-12 text-center difficultyEasy" @onclick="@( () => difficultyService.isEasyChecked = !difficultyService.isEasyChecked )" style=" height: 35vh;">
 

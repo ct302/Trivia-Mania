@@ -26,7 +26,7 @@ namespace Trivia_App.Areas.Identity.Pages.Account.Manage
         }
 
         [BindProperty]
-        public InputModel Input { get; set; }
+        public InputModel Input { get; set;}
 
         [TempData]
         public string StatusMessage { get; set; }
